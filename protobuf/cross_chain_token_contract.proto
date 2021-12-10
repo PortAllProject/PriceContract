@@ -1,0 +1,210 @@
+syntax = "proto3";
+
+package token;
+
+import "aelf/core.proto";
+import "aelf/options.proto";
+import "callback_input.proto";
+import "acs13.proto";
+import "google/protobuf/empty.proto";
+import "google/protobuf/wrappers.proto";
+
+option csharp_namespace = "AElf.Contracts.CrossChainToken";
+
+service CrossChainTokenContract {
+
+    option (aelf.csharp_state) = "AElf.Contracts.CrossChainToken.CrossChainTokenState";
+    option (aelf.base) = "acs13.proto";
+
+    // Actions
+    
+    rpc Initialize (InitializeInput) returns (google.protobuf.Empty) {
+    }
+
+    // Cross-chain transfer and receive.
+    rpc CrossChainTransfer (CrossChainTransferInput) returns (google.protobuf.Empty) {
+    }
+    rpc ClaimCrossChainTokens (ClaimCrossChainTokensInput) returns (google.protobuf.Empty) {
+    }
+    rpc CrossChainConfirmToken (CallbackInput) returns (google.protobuf.Empty) {
+    }
+    rpc RegisterMerkleRoot (RegisterMerkleRootInput) returns (google.protobuf.Empty) {
+    }
+
+    // Basic functions
+    rpc Transfer (TransferInput) returns (google.protobuf.Empty) {
+    }
+    rpc TransferFrom (TransferFromInput) returns (google.protobuf.Empty) {
+    }
+    rpc Approve (ApproveInput) returns (google.protobuf.Empty) {
+    }
+    rpc UnApprove (UnApproveInput) returns (google.protobuf.Empty) {
+    }
+
+    // Views
+    rpc GetTokenInfo (GetTokenInfoInput) returns (TokenInfo) {
+        option (aelf.is_view) = true;
+    }
+    rpc GetBalance (GetBalanceInput) returns (GetBalanceOutput) {
+        option (aelf.is_view) = true;
+    }
+    rpc GetAllowance (GetAllowanceInput) returns (GetAllowanceOutput) {
+        option (aelf.is_view) = true;
+    }
+}
+
+message InitializeInput {
+    aelf.Address oracle_contract_address = 1;
+}
+
+message TokenInfo {
+    string symbol = 1;
+    string token_name = 2;
+    string field = 3;
+}
+
+message TransferInput {
+    aelf.Address to = 1;
+    string symbol = 2;
+    string field = 3;
+    int64 amount = 4;
+    string memo = 5;
+}
+
+message TransferFromInput {
+    aelf.Address from = 1;
+    aelf.Address to = 2;
+    string symbol = 3;
+    string field = 4;
+    int64 amount = 5;
+    string memo = 6;
+}
+
+message ApproveInput {
+    aelf.Address spender = 1;
+    string symbol = 2;
+    string field = 3;
+    int64 amount = 4;
+}
+
+message UnApproveInput {
+    aelf.Address spender = 1;
+    string symbol = 2;
+    string field = 3;
+    int64 amount = 4;
+}
+
+message GetTokenInfoInput {
+    string symbol = 1;
+    string filed = 2;
+}
+
+message GetBalanceInput {
+    string symbol = 1;
+    string field = 2;
+    aelf.Address owner = 3;
+}
+
+message GetBalanceOutput {
+    string symbol = 1;
+    string field = 2;
+    aelf.Address owner = 3;
+    int64 balance = 4;
+}
+
+message GetAllowanceInput {
+    string symbol = 1;
+    string field = 2;
+    aelf.Address owner = 3;
+    aelf.Address spender = 4;
+}
+
+message GetAllowanceOutput {
+    string symbol = 1;
+    string field = 2;
+    aelf.Address owner = 3;
+    aelf.Address spender = 4;
+    int64 allowance = 5;
+}
+
+message CrossChainTransferInput {
+    string symbol = 1;
+    string to_chain_field = 2;
+    CrossChainTokenReceiveInfoList token_receive_infos = 3;
+    string memo = 4;
+}
+
+message CrossChainTokenReceiveInfo {
+    aelf.Address address = 1;
+    int64 amount = 2;
+}
+
+message CrossChainTokenReceiveInfoList {
+    repeated CrossChainTokenReceiveInfo value = 1;
+}
+
+message ClaimCrossChainTokensInput {
+    string from_chain_field = 1;
+    string ethereum_transaction_id = 2;
+}
+
+message CrossChainTokenConfirmInfo {
+    string cross_chain_transfer_id = 1;
+    string symbol = 2;
+    string field = 3;
+    CrossChainTokenReceiveInfoList token_receive_infos = 4;
+}
+
+message RegisterMerkleRootInput {
+    aelf.Hash merkle_root = 1;
+}
+
+// Events
+
+message Transferred {
+    option (aelf.is_event) = true;
+    aelf.Address from = 1 [(aelf.is_indexed) = true];
+    aelf.Address to = 2 [(aelf.is_indexed) = true];
+    string token_full_name = 3 [(aelf.is_indexed) = true];
+    int64 amount = 4;
+    string memo = 5;
+}
+
+message Approved {
+    option (aelf.is_event) = true;
+    aelf.Address owner = 1 [(aelf.is_indexed) = true];
+    aelf.Address spender = 2 [(aelf.is_indexed) = true];
+    string token_full_name = 3 [(aelf.is_indexed) = true];
+    int64 amount = 4;
+}
+
+message UnApproved {
+    option (aelf.is_event) = true;
+    aelf.Address owner = 1 [(aelf.is_indexed) = true];
+    aelf.Address spender = 2 [(aelf.is_indexed) = true];
+    string token_full_name = 3 [(aelf.is_indexed) = true];
+    int64 amount = 4;
+}
+
+message CrossChainTokenTransferred {
+    option (aelf.is_event) = true;
+    aelf.Address from = 1;
+    string to_chain_field = 2;
+    CrossChainTokenReceiveInfoList token_receive_infos = 3;
+    string symbol = 4;
+    string memo = 5;
+}
+
+message CrossChainTokenClaimed {
+    option (aelf.is_event) = true;
+    string from_chain_field = 1;
+    string ethereum_transaction_id = 2;
+    aelf.Address sender = 3;
+}
+
+message CrossChainTokenConfirmed {
+    option (aelf.is_event) = true;
+    string token_full_name = 1;
+    int64 amount = 2;
+    aelf.Address receiver = 3;
+}

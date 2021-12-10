@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <!-- The root namespace -->
+        <!-- Mark this project as a contract -->
+        <IsContract>true</IsContract>
+        <RootNamespace>AElf.Contracts.Price</RootNamespace>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+        <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+        <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ContractReference Include="..\..\protobuf\token_contract.proto">
+            <Link>Protobuf\Proto\token_contract.proto</Link>
+        </ContractReference>
+        <ContractReference Include="..\..\protobuf\oracle_contract.proto">
+            <Link>Protobuf\Proto\oracle_contract.proto</Link>
+        </ContractReference>
+        <CommonMessage Include="..\..\protobuf\callback_input.proto">
+            <Link>Protobuf\Proto\callback_input.proto</Link>
+        </CommonMessage>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ContractCode Include="..\..\protobuf\price_contract.proto">
+            <Link>Protobuf\Proto\price_contract.proto</Link>
+        </ContractCode>
+    </ItemGroup>
+</Project>

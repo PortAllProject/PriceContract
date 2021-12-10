@@ -1,0 +1,56 @@
+syntax = "proto3";
+
+import "aelf/core.proto";
+import "aelf/options.proto";
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+import "callback_input.proto";
+
+option csharp_namespace = "AElf.Contracts.Price";
+
+service PriceContract {
+  option (aelf.csharp_state) = "AElf.Contracts.Price.PriceContractState";
+
+  rpc Initialize (aelf.Address) returns (google.protobuf.Empty) {}
+  
+  rpc RecordSwapTokenPrice (CallbackInput) returns (google.protobuf.Empty) {}
+  rpc RecordExchangeTokenPrice (CallbackInput) returns (google.protobuf.Empty) {}
+
+  // Views 
+  //todo batch price
+  rpc GetSwapTokenPriceInfo (GetSwapTokenPriceInfoInput) returns (Price) {
+    option (aelf.is_view) = true;
+  }
+  
+  rpc GetExchangeTokenPriceInfo (GetExchangeTokenPriceInfoInput) returns (Price) {
+    option (aelf.is_view) = true;
+  }
+}
+
+message TokenPrice{
+  string token_symbol = 1;
+  string target_token_symbol = 2;
+  string price = 3;
+  google.protobuf.Timestamp timestamp = 4;
+}
+
+message GetSwapTokenPriceInfoInput{
+  string token_symbol = 1;
+  string target_token_symbol = 2;
+}
+
+message GetExchangeTokenPriceInfoInput{
+  aelf.Address organization = 1;
+  string token_symbol = 2;
+  string target_token_symbol = 3;
+}
+
+message Price{
+  string value = 1;
+}
+
+message PriceTraceInfo {
+  string traced_token = 1;
+  int32 traced_path_weight = 2;
+  repeated string token_list = 3;
+}
