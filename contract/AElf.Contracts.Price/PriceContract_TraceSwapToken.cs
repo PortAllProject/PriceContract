@@ -1,5 +1,4 @@
-﻿using System.Globalization;
-using System.Linq;
+﻿using System.Linq;
 
 namespace AElf.Contracts.Price
 {
@@ -39,12 +38,22 @@ namespace AElf.Contracts.Price
             UpdateTokenPriceTraceInfo(originalSymbol, targetTokenSymbol);
         }
 
-        private void UpdateTokenPairPrice(string originalTokenSymbol, string targetTokenSymbol, string price)
+        private void UpdateTokenPairPrice(string originalTokenSymbol, string targetTokenSymbol, Price price)
         {
             var tokenKey = GetTokenKey(originalTokenSymbol, targetTokenSymbol, out var isReverse);
-            State.SwapTokenPriceInfo[tokenKey] = isReverse? GetPriceReciprocalStr(price) : price;
+            var currentTokenPrice = State.SwapTokenPriceInfo[tokenKey];
+            if (currentTokenPrice.Timestamp >= price.Timestamp)
+            {
+                return;
+            }
+            
+            var priceValue = isReverse? GetPriceReciprocalStr(price.Value) : price.Value;
+            State.SwapTokenPriceInfo[tokenKey] = new Price
+            {
+                Value = priceValue,
+                Timestamp = price.Timestamp
+            };
         }
-        
 
         private void UpdateTokenPriceTraceInfo(string originalTokenSymbol, string targetSymbol)
         {
@@ -79,6 +88,23 @@ namespace AElf.Contracts.Price
             }
         }
 
+        private void AssignTokenPriceTraceInfo(string originalTokenSymbol, string targetSymbol)
+        {
+            var originalTokenInfo = State.SwapTokenTraceInfo[originalTokenSymbol];
+            Assert(originalTokenInfo.TokenList.Contains(targetSymbol),
+                $"Pair {originalTokenSymbol}-{targetSymbol} does not exist");
+            originalTokenInfo.TracedToken = targetSymbol;
+            State.SwapTokenTraceInfo[originalTokenSymbol] = originalTokenInfo;
+            if (originalTokenInfo.TracedPathWeight == InfinitePathWeight)
+            {
+                return;
+            }
+
+            var targetSymbolTokenInfo = State.SwapTokenTraceInfo[targetSymbol];
+            Assert(originalTokenInfo.TracedPathWeight == targetSymbolTokenInfo.TracedPathWeight + 1,
+                $"Invalid path set for pair {originalTokenSymbol}-{targetSymbol}");
+        }
+
         private decimal TraceSwapTokenPrice(string originalTokenSymbol, string targetTokenSymbol)
         {
             var originalTokenTraceInfo = State.SwapTokenTraceInfo[originalTokenSymbol];
@@ -102,7 +128,7 @@ namespace AElf.Contracts.Price
         {
             var tokenKey = GetTokenKey(originalTokenSymbol, nextTokenSymbol, out var isReverse);
             var price = State.SwapTokenPriceInfo[tokenKey];
-            return isReverse ? GetPriceReciprocal(price) : decimal.Parse(price);
+            return isReverse ? GetPriceReciprocal(price.Value) : decimal.Parse(price.Value);
         }
 
         private decimal GetPriceReciprocal(string price)
