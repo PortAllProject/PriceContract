@@ -73,7 +73,8 @@ namespace AElf.Contracts.Price
                 TokenSymbol = tokenPrice.TokenSymbol,
                 TargetTokenSymbol = tokenPrice.TargetTokenSymbol,
                 Price = tokenPrice.Price,
-                Timestamp = tokenPrice.Timestamp
+                Timestamp = tokenPrice.Timestamp,
+                QueryId = input.QueryId
             });
             return new Empty();
         }
@@ -111,7 +112,8 @@ namespace AElf.Contracts.Price
                 PriceSupplier = new OrganizationList
                 {
                     NodeList = {input.OracleNodes}
-                }
+                },
+                QueryId = input.QueryId
             });
             return new Empty();
         }

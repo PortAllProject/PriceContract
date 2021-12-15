@@ -112,6 +112,7 @@ message NewestSwapPriceUpdated{
   string target_token_symbol = 2;
   string price = 3;
   google.protobuf.Timestamp timestamp = 4;
+  aelf.Hash query_id = 5;
 }
 
 message NewestExchangePriceUpdated{
@@ -121,6 +122,7 @@ message NewestExchangePriceUpdated{
   string price = 3;
   google.protobuf.Timestamp timestamp = 4;
   OrganizationList price_supplier = 5;
+  aelf.Hash query_id = 6;
 }
 
 message OrganizationList{

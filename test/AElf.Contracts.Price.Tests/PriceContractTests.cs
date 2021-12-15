@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AElf.Contracts.MultiToken;
 using AElf.Contracts.TestsOracle;
+using AElf.CSharp.Core;
 using AElf.Types;
 using Shouldly;
 using Volo.Abp.Threading;
@@ -136,11 +137,11 @@ namespace AElf.Contracts.Price.Test
             return result.Output;
         }
 
-        private async Task RecordExchangeTokenPriceAsync(Hash queryId, string tokenSymbol, string targetTokenSymbol,
+        private async Task<IExecutionResult<Empty>> RecordExchangeTokenPriceAsync(Hash queryId, string tokenSymbol, string targetTokenSymbol,
             string price,
             Timestamp timestamp)
         {
-            await OracleContractStub.RecordTokenPrice.SendAsync(new TokenPriceInfo
+            return await OracleContractStub.RecordTokenPrice.SendAsync(new TokenPriceInfo
             {
                 CallBackAddress = PriceContractAddress,
                 CallBackMethodName = nameof(PriceContractStub.RecordExchangeTokenPrice),
@@ -150,11 +151,11 @@ namespace AElf.Contracts.Price.Test
             });
         }
 
-        private async Task RecordSwapTokenPriceAsync(Hash queryId, string tokenSymbol, string targetTokenSymbol,
+        private async Task<IExecutionResult<Empty>> RecordSwapTokenPriceAsync(Hash queryId, string tokenSymbol, string targetTokenSymbol,
             string price,
             Timestamp timestamp)
         {
-            await OracleContractStub.RecordTokenPrice.SendAsync(new TokenPriceInfo
+            return await OracleContractStub.RecordTokenPrice.SendAsync(new TokenPriceInfo
             {
                 CallBackAddress = PriceContractAddress,
                 CallBackMethodName = nameof(PriceContractStub.RecordSwapTokenPrice),
