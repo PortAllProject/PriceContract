@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+        <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
+    </PropertyGroup>
+    
+    <ItemGroup>
+        <CommonMessage Include="..\..\protobuf\callback_input.proto">
+            <Link>Protobuf\Proto\callback_input.proto</Link>
+        </CommonMessage>
+    </ItemGroup>
+    
+    <ItemGroup>
+        <ContractBase Include="..\..\protobuf\oracle_contract.proto">
+            <Link>Protobuf\Proto\oracle_contract.proto</Link>
+        </ContractBase>
+        <ContractCode Include="..\..\protobuf\test_oracle_contract.proto">
+            <Link>Protobuf\Proto\test_oracle_contract.proto</Link>
+        </ContractCode>
+    </ItemGroup>
+</Project>

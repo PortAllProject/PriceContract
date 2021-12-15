@@ -10,16 +10,8 @@ namespace AElf.Boilerplate.TestBase
         public new List<Hash> GetDeployContractNameList()
         {
             var list = base.GetDeployContractNameList();
-            list.Add(DAppSmartContractAddressNameProvider.Name);
-            list.Add(OracleUserSmartContractAddressNameProvider.Name);
-            list.Add(OracleSmartContractAddressNameProvider.Name);
-            list.Add(NumericAggregatorSmartContractAddressNameProvider.Name);
-            //list.Add(StringAggregatorSmartContractAddressNameProvider.Name);
-            list.Add(ReportSmartContractAddressNameProvider.Name);
-            list.Add(RegimentSmartContractAddressNameProvider.Name);
-            list.Add(BridgeSmartContractAddressNameProvider.Name);
-            list.Add(MerkleTreeGeneratorSmartContractAddressNameProvider.Name);
-            list.Add(MerkleTreeRecorderSmartContractAddressNameProvider.Name);
+            list.Add(OracleTestContractAddressNameProvider.Name);
+            list.Add(PriceContractAddressNameProvider.Name);
             return list;
         }
     }
@@ -29,16 +21,8 @@ namespace AElf.Boilerplate.TestBase
         public new List<Hash> GetDeployContractNameList()
         {
             var list = base.GetDeployContractNameList();
-            list.Add(DAppSmartContractAddressNameProvider.Name);
-            list.Add(OracleUserSmartContractAddressNameProvider.Name);
-            list.Add(OracleSmartContractAddressNameProvider.Name);
-            list.Add(NumericAggregatorSmartContractAddressNameProvider.Name);
-            //list.Add(StringAggregatorSmartContractAddressNameProvider.Name);
-            list.Add(ReportSmartContractAddressNameProvider.Name);
-            list.Add(RegimentSmartContractAddressNameProvider.Name);
-            list.Add(BridgeSmartContractAddressNameProvider.Name);
-            list.Add(MerkleTreeGeneratorSmartContractAddressNameProvider.Name);
-            list.Add(MerkleTreeRecorderSmartContractAddressNameProvider.Name);
+            list.Add(OracleTestContractAddressNameProvider.Name);
+            list.Add(PriceContractAddressNameProvider.Name);
             return list;
         }
     }

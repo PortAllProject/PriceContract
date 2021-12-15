@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using Google.Protobuf.WellKnownTypes;
 
 namespace AElf.Contracts.Price
 {
@@ -16,7 +17,7 @@ namespace AElf.Contracts.Price
         {
         }
 
-        private void AddTokenPair(string originalSymbol, string targetTokenSymbol, string price)
+        private void AddTokenPair(string originalSymbol, string targetTokenSymbol, string price, Timestamp timestamp)
         {
             AssertValidToken(originalSymbol, targetTokenSymbol);
             var originalTokenInfo = State.SwapTokenTraceInfo[originalSymbol] ?? new PriceTraceInfo
@@ -35,6 +36,12 @@ namespace AElf.Contracts.Price
 
             State.SwapTokenTraceInfo[targetTokenSymbol] = targetTokenInfo;
             State.SwapTokenTraceInfo[originalSymbol] = originalTokenInfo;
+            var tokenKey = GetTokenKey(originalSymbol, targetTokenSymbol, out var isReverse);
+            State.SwapTokenPriceInfo[tokenKey] = new Price
+            {
+                Value = !isReverse ? price : GetPriceReciprocalStr(price),
+                Timestamp = timestamp
+            };
             UpdateTokenPriceTraceInfo(originalSymbol, targetTokenSymbol);
         }
 
@@ -46,8 +53,8 @@ namespace AElf.Contracts.Price
             {
                 return;
             }
-            
-            var priceValue = isReverse? GetPriceReciprocalStr(price.Value) : price.Value;
+
+            var priceValue = isReverse ? GetPriceReciprocalStr(price.Value) : price.Value;
             State.SwapTokenPriceInfo[tokenKey] = new Price
             {
                 Value = priceValue,
@@ -135,7 +142,7 @@ namespace AElf.Contracts.Price
         {
             return decimal.Round(decimal.Parse(price), PriceDecimals);
         }
-        
+
         private string GetPriceReciprocalStr(string price)
         {
             return GetPriceReciprocal(price).ToString();

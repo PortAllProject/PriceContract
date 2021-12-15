@@ -37,6 +37,10 @@ service PriceContract {
   rpc GetBatchExchangeTokenPriceInfo (GetBatchExchangeTokenPriceInfoInput) returns (BatchPrices) {
     option (aelf.is_view) = true;
   }
+
+  rpc CheckQueryIdIfExisted (aelf.Hash) returns (IsQueryIdExisted) {
+    option (aelf.is_view) = true;
+  }
 }
 
 message InitializeInput{
@@ -96,6 +100,10 @@ message PriceTraceInfo {
   string traced_token = 1;
   int32 traced_path_weight = 2;
   repeated string token_list = 3;
+}
+
+message IsQueryIdExisted{
+  bool value = 1;
 }
 
 message NewestSwapPriceUpdated{

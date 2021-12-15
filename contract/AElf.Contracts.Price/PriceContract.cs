@@ -49,6 +49,7 @@ namespace AElf.Contracts.Price
         {
             Assert(Context.Sender == State.OracleContract.Value, "No permission.");
             Assert(State.QueryIdMap[input.QueryId], $"Query ID:{input.QueryId} does not exist");
+            State.QueryIdMap.Remove(input.QueryId);
             var tokenPrice = new TokenPrice();
             tokenPrice.MergeFrom(input.Result);
             var originalToken = State.SwapTokenTraceInfo[tokenPrice.TokenSymbol];
@@ -63,7 +64,8 @@ namespace AElf.Contracts.Price
             }
             else
             {
-                AddTokenPair(tokenPrice.TokenSymbol, tokenPrice.TargetTokenSymbol, tokenPrice.Price);
+                AddTokenPair(tokenPrice.TokenSymbol, tokenPrice.TargetTokenSymbol, tokenPrice.Price,
+                    tokenPrice.Timestamp);
             }
 
             Context.Fire(new NewestSwapPriceUpdated
@@ -80,19 +82,20 @@ namespace AElf.Contracts.Price
         {
             Assert(Context.Sender == State.OracleContract.Value, "No permission.");
             Assert(State.QueryIdMap[input.QueryId], $"Query ID:{input.QueryId} does not exist");
+            State.QueryIdMap.Remove(input.QueryId);
             var tokenPrice = new TokenPrice();
             tokenPrice.MergeFrom(input.Result);
             var tokenKey = GetTokenKey(tokenPrice.TokenSymbol, tokenPrice.TargetTokenSymbol, out var isReverse);
             var price = isReverse ? GetPriceReciprocalStr(tokenPrice.Price) : tokenPrice.Price;
             foreach (var node in input.OracleNodes)
             {
-                var currentPriceInfo = State.ExchangePriceInfo[node][tokenKey];
+                var currentPriceInfo = State.ExchangeTokenPriceInfo[node][tokenKey];
                 if (currentPriceInfo != null && currentPriceInfo.Timestamp >= tokenPrice.Timestamp)
                 {
                     continue;
                 }
 
-                State.ExchangePriceInfo[node][tokenKey] = new Price
+                State.ExchangeTokenPriceInfo[node][tokenKey] = new Price
                 {
                     Value = price,
                     Timestamp = tokenPrice.Timestamp
