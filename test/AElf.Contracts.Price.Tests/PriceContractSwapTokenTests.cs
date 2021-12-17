@@ -355,6 +355,35 @@ namespace AElf.Contracts.Price.Test
             priceInfo.Value.ShouldBe("0");
         }
 
+        [Fact]
+        public async Task UpdateAuthorizedSwapTokenPriceQueryUsers_Without_Controller_Should_Fail()
+        {
+            var unAuthorizedUser = SampleAccount.Accounts.Skip(1).First().KeyPair;
+            var unAuthorizedPriceStub = GetPriceContractStub(unAuthorizedUser);
+            var newUserList = new AuthorizedSwapTokenPriceQueryUsers
+            {
+                List = {OracleNodes}
+            };
+
+            var txResult = await unAuthorizedPriceStub.UpdateAuthorizedSwapTokenPriceQueryUsers.SendWithExceptionAsync(newUserList);
+            txResult.TransactionResult.Status.ShouldBe(TransactionResultStatus.Failed);
+            txResult.TransactionResult.Error.ShouldContain("Invalid sender");
+        }
+
+        [Fact]
+        public async Task UpdateAuthorizedSwapTokenPriceQueryUsers_Test()
+        {
+            var newUserList = new AuthorizedSwapTokenPriceQueryUsers
+            {
+                List = {OracleNodes}
+            };
+
+            await PriceContractStub.UpdateAuthorizedSwapTokenPriceQueryUsers.SendAsync(newUserList);
+            var userList = await PriceContractStub.GetAuthorizedSwapTokenPriceQueryUsers.CallAsync(new Empty());
+            userList.List.Count.ShouldBe(newUserList.List.Count);
+            userList.List.All(x => newUserList.List.Contains(x)).ShouldBeTrue();
+        }
+
         private async Task AddNewPairWithPriceAsync(string token1, string token2, string price,
             Timestamp timestamp = null)
         {
