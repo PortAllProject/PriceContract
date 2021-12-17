@@ -68,13 +68,17 @@ namespace AElf.Contracts.Price
                     tokenPrice.Timestamp);
             }
 
+            var underlyingTokenPrice = tokenPrice.TargetTokenSymbol == UnderlyingTokenSymbol
+                ? tokenPrice.Price
+                : TraceSwapTokenPrice(tokenPrice.TokenSymbol, UnderlyingTokenSymbol).ToString();
             Context.Fire(new NewestSwapPriceUpdated
             {
                 TokenSymbol = tokenPrice.TokenSymbol,
                 TargetTokenSymbol = tokenPrice.TargetTokenSymbol,
                 Price = tokenPrice.Price,
                 Timestamp = tokenPrice.Timestamp,
-                QueryId = input.QueryId
+                QueryId = input.QueryId,
+                UnderlyingTokenPrice = underlyingTokenPrice
             });
             return new Empty();
         }

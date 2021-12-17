@@ -124,8 +124,10 @@ namespace AElf.Contracts.Price
             if (targetTokenSymbol != UnderlyingTokenSymbol)
                 return GetTracedTokenPrice(originalTokenSymbol, targetTokenSymbol);
 
-            Assert(originalTokenTraceInfo.TracedPathWeight < InfinitePathWeight,
-                $"Token {originalTokenSymbol}'s Usdt price can not be traced");
+            if (originalTokenTraceInfo.TracedPathWeight == InfinitePathWeight)
+            {
+                return 0m;
+            }
             var nextTokenSymbol = originalTokenTraceInfo.TracedToken;
             var price = GetTracedTokenPrice(originalTokenSymbol, nextTokenSymbol);
             return price * TraceSwapTokenPrice(nextTokenSymbol, targetTokenSymbol);
