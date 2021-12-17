@@ -1,4 +1,5 @@
 using AElf.Types;
+using Google.Protobuf.WellKnownTypes;
 
 namespace AElf.Contracts.Price
 {
@@ -7,21 +8,34 @@ namespace AElf.Contracts.Price
         public override Price GetSwapTokenPriceInfo(GetSwapTokenPriceInfoInput input)
         {
             var tokenKey = GetTokenKey(input.TokenSymbol, input.TargetTokenSymbol, out _);
+
+            Timestamp timestamp = null;
             if (State.SwapTokenPriceInfo[tokenKey] != null)
             {
-                return State.SwapTokenPriceInfo[tokenKey];
+                timestamp = State.SwapTokenPriceInfo[tokenKey].Timestamp;
             }
             var price = TraceSwapTokenPrice(input.TokenSymbol, input.TargetTokenSymbol);
             return new Price
             {
-                Value = price.ToString()
+                Value = price.ToString(),
+                Timestamp = timestamp
             };
         }
 
         public override Price GetExchangeTokenPriceInfo(GetExchangeTokenPriceInfoInput input)
         {
-            var tokenKey = GetTokenKey(input.TokenSymbol, input.TargetTokenSymbol, out _);
-            return State.ExchangeTokenPriceInfo[input.Organization][tokenKey];
+            var tokenKey = GetTokenKey(input.TokenSymbol, input.TargetTokenSymbol, out var isReverse);
+            var priceInfo = State.ExchangeTokenPriceInfo[input.Organization][tokenKey];
+            if (!isReverse)
+            {
+                return priceInfo;
+            }
+
+            return new Price
+            {
+                Timestamp = priceInfo.Timestamp,
+                Value = GetPriceReciprocalStr(priceInfo.Value)
+            };
         }
 
         public override IsQueryIdExisted CheckQueryIdIfExisted(Hash input)
@@ -30,6 +44,11 @@ namespace AElf.Contracts.Price
             {
                 Value = State.QueryIdMap[input]
             };
+        }
+
+        public override AuthorizedSwapTokenPriceQueryUsers GetAuthorizedSwapTokenPriceQueryUsers(Empty input)
+        {
+            return State.AuthorizedSwapTokenPriceQueryUsers.Value;
         }
     }
 }

@@ -25,7 +25,7 @@ namespace AElf.Contracts.Price.Test
             var token1 = "ELF";
             var token2 = "LLYP";
             var queryId = await QueryExchangeTokenPrice(token1, token2);
-            var price = "1.2345";
+            var price = "1.23450000";
             var timestamp = Timestamp.FromDateTime(DateTime.UtcNow);
             await RecordExchangeTokenPriceAsync(queryId, token1, token2, price,
                 timestamp);

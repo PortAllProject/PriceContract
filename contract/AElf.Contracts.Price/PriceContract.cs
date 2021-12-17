@@ -6,6 +6,7 @@ using AElf.Contracts.Oracle;
 using AElf.Sdk.CSharp;
 using AElf.Types;
 using Google.Protobuf;
+using Google.Protobuf.Collections;
 using Google.Protobuf.WellKnownTypes;
 
 namespace AElf.Contracts.Price
@@ -22,6 +23,13 @@ namespace AElf.Contracts.Price
                     Context.GetContractAddressByName(SmartContractConstants.TokenContractSystemName);
             }
 
+            var authorizedUsers = input.AuthorizedUsers.Any()
+                ? input.AuthorizedUsers
+                : new RepeatedField<Address> {input.Controller};
+            State.AuthorizedSwapTokenPriceQueryUsers.Value = new AuthorizedSwapTokenPriceQueryUsers
+            {
+                List = {authorizedUsers}
+            };
             InitializeSwapUnderlyingToken();
             State.Controller.Value = input.Controller;
             return new Empty();
@@ -29,6 +37,8 @@ namespace AElf.Contracts.Price
 
         public override Hash QuerySwapTokenPrice(QueryTokenPriceInput input)
         {
+            var authorizedUsers = State.AuthorizedSwapTokenPriceQueryUsers.Value.List;
+            Assert(authorizedUsers.Contains(Context.Sender), $"UnAuthorized sender {Context.Sender}");
             const string title = "TokenSwapPrice";
             var options = new List<string> {$"{input.TokenSymbol}-{input.TargetTokenSymbol}"};
             var queryId = CreateQuery(input, title, options, nameof(RecordSwapTokenPrice));
@@ -95,9 +105,10 @@ namespace AElf.Contracts.Price
             foreach (var node in input.OracleNodes)
             {
                 var currentPriceInfo = State.ExchangeTokenPriceInfo[node][tokenKey];
-                if (currentPriceInfo != null && currentPriceInfo.Timestamp >= tokenPrice.Timestamp)
+                if (currentPriceInfo != null)
                 {
-                    continue;
+                    AssertValidTimestamp(tokenPrice.TokenSymbol, tokenPrice.TargetTokenSymbol,
+                        currentPriceInfo.Timestamp, tokenPrice.Timestamp);
                 }
 
                 State.ExchangeTokenPriceInfo[node][tokenKey] = new Price
@@ -126,6 +137,13 @@ namespace AElf.Contracts.Price
         {
             Assert(State.Controller.Value == Context.Sender, $"Invalid sender: {Context.Sender}");
             AssignTokenPriceTraceInfo(input.TokenSymbol, input.TargetTokenSymbol);
+            return new Empty();
+        }
+
+        public override Empty UpdateAuthorizedSwapTokenPriceQueryUsers(AuthorizedSwapTokenPriceQueryUsers input)
+        {
+            Assert(State.Controller.Value == Context.Sender, $"Invalid sender: {Context.Sender}");
+            State.AuthorizedSwapTokenPriceQueryUsers.Value = input;
             return new Empty();
         }
 
@@ -180,6 +198,12 @@ namespace AElf.Contracts.Price
             }
 
             return tokenKey;
+        }
+        
+        private void AssertValidTimestamp(string token1, string token2, Timestamp currentTimestamp, Timestamp newTimestamp)
+        {
+            Assert(currentTimestamp < newTimestamp,
+                $"Expired data for pair {token1}:{token2}. Data timestamp in contract: {currentTimestamp}; record data timestamp: {newTimestamp}");
         }
     }
 }

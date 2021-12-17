@@ -49,11 +49,7 @@ namespace AElf.Contracts.Price
         {
             var tokenKey = GetTokenKey(originalTokenSymbol, targetTokenSymbol, out var isReverse);
             var currentTokenPrice = State.SwapTokenPriceInfo[tokenKey];
-            if (currentTokenPrice.Timestamp >= price.Timestamp)
-            {
-                return;
-            }
-
+            AssertValidTimestamp(originalTokenSymbol, targetTokenSymbol, currentTokenPrice.Timestamp, price.Timestamp);
             var priceValue = isReverse ? GetPriceReciprocalStr(price.Value) : price.Value;
             State.SwapTokenPriceInfo[tokenKey] = new Price
             {
@@ -66,7 +62,6 @@ namespace AElf.Contracts.Price
         {
             var originalTokenInfo = State.SwapTokenTraceInfo[originalTokenSymbol];
             var targetSymbolTokenInfo = State.SwapTokenTraceInfo[targetSymbol];
-            var targetTokenTraceSymbol = targetSymbolTokenInfo.TracedToken;
             var targetTokenPathWeight = targetSymbolTokenInfo.TracedPathWeight;
             if (originalTokenInfo.TracedPathWeight == targetTokenPathWeight ||
                 originalTokenInfo.TracedPathWeight == targetTokenPathWeight + 1)
@@ -80,7 +75,7 @@ namespace AElf.Contracts.Price
                 return;
             }
 
-            originalTokenInfo.TracedToken = targetTokenTraceSymbol;
+            originalTokenInfo.TracedToken = targetSymbol;
             originalTokenInfo.TracedPathWeight = targetTokenPathWeight + 1;
             State.SwapTokenTraceInfo[originalTokenSymbol] = originalTokenInfo;
 
@@ -116,21 +111,17 @@ namespace AElf.Contracts.Price
         {
             var originalTokenTraceInfo = State.SwapTokenTraceInfo[originalTokenSymbol];
             Assert(originalTokenTraceInfo != null, $"Token:{originalTokenSymbol} does not exist");
-            if (originalTokenSymbol == targetTokenSymbol)
-            {
-                return 1m;
-            }
-
             if (targetTokenSymbol != UnderlyingTokenSymbol)
-                return GetTracedTokenPrice(originalTokenSymbol, targetTokenSymbol);
+                return decimal.Round(GetTracedTokenPrice(originalTokenSymbol, targetTokenSymbol), PriceDecimals);
 
             if (originalTokenTraceInfo.TracedPathWeight == InfinitePathWeight)
             {
                 return 0m;
             }
+
             var nextTokenSymbol = originalTokenTraceInfo.TracedToken;
             var price = GetTracedTokenPrice(originalTokenSymbol, nextTokenSymbol);
-            return price * TraceSwapTokenPrice(nextTokenSymbol, targetTokenSymbol);
+            return decimal.Round(price * TraceSwapTokenPrice(nextTokenSymbol, targetTokenSymbol), PriceDecimals);
         }
 
         private decimal GetTracedTokenPrice(string originalTokenSymbol, string nextTokenSymbol)
@@ -142,12 +133,12 @@ namespace AElf.Contracts.Price
 
         private decimal GetPriceReciprocal(string price)
         {
-            return decimal.Round(decimal.Parse(price), PriceDecimals);
+            return 1 / decimal.Parse(price);
         }
 
         private string GetPriceReciprocalStr(string price)
         {
-            return GetPriceReciprocal(price).ToString();
+            return decimal.Round(GetPriceReciprocal(price), PriceDecimals).ToString();
         }
     }
 }

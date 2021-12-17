@@ -20,6 +20,7 @@ service PriceContract {
   rpc RecordExchangeTokenPrice (CallbackInput) returns (google.protobuf.Empty) {}
 
   rpc UpdateSwapTokenTraceInfo (UpdateSwapTokenTraceInfoInput) returns (google.protobuf.Empty) {}
+  rpc UpdateAuthorizedSwapTokenPriceQueryUsers (AuthorizedSwapTokenPriceQueryUsers) returns (google.protobuf.Empty) {}
 
   // Views
   rpc GetSwapTokenPriceInfo (GetSwapTokenPriceInfoInput) returns (Price) {
@@ -41,11 +42,16 @@ service PriceContract {
   rpc CheckQueryIdIfExisted (aelf.Hash) returns (IsQueryIdExisted) {
     option (aelf.is_view) = true;
   }
+
+  rpc GetAuthorizedSwapTokenPriceQueryUsers (google.protobuf.Empty) returns (AuthorizedSwapTokenPriceQueryUsers) {
+    option (aelf.is_view) = true;
+  }
 }
 
 message InitializeInput{
   aelf.Address oracle_address = 1;
   aelf.Address controller = 2;
+  repeated aelf.Address authorized_users = 3;
 }
 
 message QueryTokenPriceInput{
@@ -106,6 +112,14 @@ message IsQueryIdExisted{
   bool value = 1;
 }
 
+message AuthorizedSwapTokenPriceQueryUsers{
+  repeated aelf.Address list = 1;
+}
+
+message OrganizationList{
+  repeated aelf.Address node_list = 1;
+}
+
 message NewestSwapPriceUpdated{
   option (aelf.is_event) = true;
   string token_symbol = 1;
@@ -124,8 +138,4 @@ message NewestExchangePriceUpdated{
   google.protobuf.Timestamp timestamp = 4;
   OrganizationList price_supplier = 5;
   aelf.Hash query_id = 6;
-}
-
-message OrganizationList{
-  repeated aelf.Address node_list = 1;
 }
