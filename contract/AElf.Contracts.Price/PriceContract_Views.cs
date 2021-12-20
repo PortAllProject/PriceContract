@@ -7,13 +7,18 @@ namespace AElf.Contracts.Price
     {
         public override Price GetSwapTokenPriceInfo(GetSwapTokenPriceInfoInput input)
         {
-            var tokenKey = GetTokenKey(input.TokenSymbol, input.TargetTokenSymbol, out _);
+            if (string.IsNullOrEmpty(input.TargetTokenSymbol))
+            {
+                input.TargetTokenSymbol = UnderlyingTokenSymbol;
+            }
 
+            var tokenKey = GetTokenKey(input.TokenSymbol, input.TargetTokenSymbol, out _);
             Timestamp timestamp = null;
             if (State.SwapTokenPriceInfo[tokenKey] != null)
             {
                 timestamp = State.SwapTokenPriceInfo[tokenKey].Timestamp;
             }
+
             var price = TraceSwapTokenPrice(input.TokenSymbol, input.TargetTokenSymbol);
             return new Price
             {
@@ -24,6 +29,11 @@ namespace AElf.Contracts.Price
 
         public override Price GetExchangeTokenPriceInfo(GetExchangeTokenPriceInfoInput input)
         {
+            if (string.IsNullOrEmpty(input.TargetTokenSymbol))
+            {
+                input.TargetTokenSymbol = UnderlyingTokenSymbol;
+            }
+
             var tokenKey = GetTokenKey(input.TokenSymbol, input.TargetTokenSymbol, out var isReverse);
             var priceInfo = State.ExchangeTokenPriceInfo[input.Organization][tokenKey];
             if (!isReverse)
