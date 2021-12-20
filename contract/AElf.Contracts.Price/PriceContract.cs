@@ -147,6 +147,13 @@ namespace AElf.Contracts.Price
             return new Empty();
         }
 
+        public override Empty ChangeOracle(ChangeOracleInput input)
+        {
+            Assert(State.Controller.Value == Context.Sender, $"Invalid sender: {Context.Sender}");
+            State.OracleContract.Value = input.Oracle;
+            return new Empty();
+        }
+
         private Hash CreateQuery(QueryTokenPriceInput input, string title, IEnumerable<string> options, string callback)
         {
             State.TokenContract.Approve.Send(new ApproveInput

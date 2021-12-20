@@ -22,6 +22,7 @@ service PriceContract {
   rpc UpdateSwapTokenTraceInfo (UpdateSwapTokenTraceInfoInput) returns (google.protobuf.Empty) {}
   rpc UpdateAuthorizedSwapTokenPriceQueryUsers (AuthorizedSwapTokenPriceQueryUsers) returns (google.protobuf.Empty) {}
 
+  rpc ChangeOracle (ChangeOracleInput) returns (google.protobuf.Empty) {}
   // Views
   rpc GetSwapTokenPriceInfo (GetSwapTokenPriceInfoInput) returns (Price) {
     option (aelf.is_view) = true;
@@ -118,6 +119,10 @@ message AuthorizedSwapTokenPriceQueryUsers{
 
 message OrganizationList{
   repeated aelf.Address node_list = 1;
+}
+
+message ChangeOracleInput{
+  aelf.Address oracle = 1;
 }
 
 message NewestSwapPriceUpdated{
