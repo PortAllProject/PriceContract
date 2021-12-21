@@ -26,6 +26,24 @@ namespace AElf.Contracts.Price
                 Timestamp = timestamp
             };
         }
+        
+        public override BatchPrices GetBatchSwapTokenPriceInfo(GetBatchSwapTokenPriceInfoInput input)
+        {
+            var result = new BatchPrices();
+            foreach (var tokenPriceQuery in input.TokenPriceQueryList)
+            {
+                var priceInfo = GetSwapTokenPriceInfo(tokenPriceQuery);
+                result.TokenPrices.Add(new TokenPrice
+                {
+                    TokenSymbol = tokenPriceQuery.TokenSymbol,
+                    TargetTokenSymbol = tokenPriceQuery.TargetTokenSymbol,
+                    Price = priceInfo.Value,
+                    Timestamp = priceInfo.Timestamp
+                });
+            }
+
+            return result;
+        }
 
         public override Price GetExchangeTokenPriceInfo(GetExchangeTokenPriceInfoInput input)
         {
@@ -46,6 +64,24 @@ namespace AElf.Contracts.Price
                 Timestamp = priceInfo.Timestamp,
                 Value = GetPriceReciprocalStr(priceInfo.Value)
             };
+        }
+
+        public override BatchPrices GetBatchExchangeTokenPriceInfo(GetBatchExchangeTokenPriceInfoInput input)
+        {
+            var result = new BatchPrices();
+            foreach (var tokenPriceQuery in input.TokenPriceQueryList)
+            {
+                var priceInfo = GetExchangeTokenPriceInfo(tokenPriceQuery);
+                result.TokenPrices.Add(new TokenPrice
+                {
+                    TokenSymbol = tokenPriceQuery.TokenSymbol,
+                    TargetTokenSymbol = tokenPriceQuery.TargetTokenSymbol,
+                    Price = priceInfo.Value,
+                    Timestamp = priceInfo.Timestamp
+                });
+            }
+
+            return result;
         }
 
         public override IsQueryIdExisted CheckQueryIdIfExisted(Hash input)

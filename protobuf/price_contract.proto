@@ -81,7 +81,7 @@ message GetSwapTokenPriceInfoInput{
 }
 
 message GetBatchSwapTokenPriceInfoInput{
-  repeated GetSwapTokenPriceInfoInput token_list = 1;
+  repeated GetSwapTokenPriceInfoInput token_price_query_list = 1;
 }
 
 message GetExchangeTokenPriceInfoInput{
@@ -91,11 +91,11 @@ message GetExchangeTokenPriceInfoInput{
 }
 
 message GetBatchExchangeTokenPriceInfoInput{
-  repeated GetExchangeTokenPriceInfoInput token_list = 1;
+  repeated GetExchangeTokenPriceInfoInput token_price_query_list = 1;
 }
 
 message  BatchPrices{
-  repeated Price prices = 1;
+  repeated TokenPrice tokenPrices = 1;
 }
 
 message Price{
