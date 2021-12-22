@@ -111,6 +111,11 @@ namespace AElf.Contracts.Price
         {
             var originalTokenTraceInfo = State.SwapTokenTraceInfo[originalTokenSymbol];
             Assert(originalTokenTraceInfo != null, $"Token:{originalTokenSymbol} does not exist");
+            if (originalTokenSymbol == targetTokenSymbol)
+            {
+                return 1m;
+            }
+
             if (targetTokenSymbol != UnderlyingTokenSymbol)
                 return decimal.Round(GetTracedTokenPrice(originalTokenSymbol, targetTokenSymbol), PriceDecimals);
 
