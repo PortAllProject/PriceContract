@@ -119,7 +119,8 @@ namespace AElf.Contracts.Price
             if (targetTokenSymbol != UnderlyingTokenSymbol)
                 return decimal.Round(GetTracedTokenPrice(originalTokenSymbol, targetTokenSymbol), PriceDecimals);
 
-            if (originalTokenTraceInfo.TracedPathWeight == InfinitePathWeight)
+            if (originalTokenTraceInfo.TracedPathWeight == InfinitePathWeight ||
+                originalTokenTraceInfo.TracedPathWeight > State.TracePathLimit.Value)
             {
                 return 0m;
             }

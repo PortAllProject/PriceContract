@@ -96,5 +96,13 @@ namespace AElf.Contracts.Price
         {
             return State.AuthorizedSwapTokenPriceQueryUsers.Value;
         }
+
+        public override TracePathLimit GetTracePathLimit(Empty input)
+        {
+            return new TracePathLimit
+            {
+                PathLimit = State.TracePathLimit.Value
+            };
+        }
     }
 }

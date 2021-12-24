@@ -23,6 +23,7 @@ service PriceContract {
   rpc UpdateAuthorizedSwapTokenPriceQueryUsers (AuthorizedSwapTokenPriceQueryUsers) returns (google.protobuf.Empty) {}
 
   rpc ChangeOracle (ChangeOracleInput) returns (google.protobuf.Empty) {}
+  rpc ChangeTracePathLimit(ChangeTracePathLimitInput) returns (google.protobuf.Empty) {}
   // Views
   rpc GetSwapTokenPriceInfo (GetSwapTokenPriceInfoInput) returns (Price) {
     option (aelf.is_view) = true;
@@ -47,12 +48,17 @@ service PriceContract {
   rpc GetAuthorizedSwapTokenPriceQueryUsers (google.protobuf.Empty) returns (AuthorizedSwapTokenPriceQueryUsers) {
     option (aelf.is_view) = true;
   }
+
+  rpc GetTracePathLimit (google.protobuf.Empty) returns (TracePathLimit) {
+    option (aelf.is_view) = true;
+  }
 }
 
 message InitializeInput{
   aelf.Address oracle_address = 1;
   aelf.Address controller = 2;
   repeated aelf.Address authorized_users = 3;
+  int32 trace_path_limit = 4;
 }
 
 message QueryTokenPriceInput{
@@ -123,6 +129,14 @@ message OrganizationList{
 
 message ChangeOracleInput{
   aelf.Address oracle = 1;
+}
+
+message ChangeTracePathLimitInput{
+  int32 new_path_limit = 1;
+}
+
+message TracePathLimit{
+  int32 path_limit = 1;
 }
 
 message NewestSwapPriceUpdated{

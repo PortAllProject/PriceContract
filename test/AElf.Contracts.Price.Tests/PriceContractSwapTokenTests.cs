@@ -204,7 +204,7 @@ namespace AElf.Contracts.Price.Test
             await AddNewPairWithPriceAsync(token5, token6, price7);
 
             var toke1Price = await GetSwapUnderlyingTokenPrice(token1);
-            toke1Price.ShouldBe("4.19051021");
+            toke1Price.ShouldBe("0");
             var toke2Price = await GetSwapUnderlyingTokenPrice(token2);
             toke2Price.ShouldBe("3.39449996");
             var toke3Price = await GetSwapUnderlyingTokenPrice(token3);
@@ -278,45 +278,30 @@ namespace AElf.Contracts.Price.Test
         [Fact]
         public async Task RecordSwapTokenPrice_Update_Trace_Path_Should_Get_Right_UnderlyingToken_Price()
         {
-            var token1 = "GM";
             var token2 = "LLYP";
             var token3 = "ZX";
             var token4 = "WJC";
             var token5 = "ELF";
             var token6 = UnderlyingTokenSymbol;
-            var price1 = "1.23450000";
-            var price2 = "0.156";
             var price3 = "6.7890";
             var price4 = "100.5432";
             var price5 = "12.0132";
             var price6 = "0.5000";
             var price7 = "10.0000";
-            await AddNewPairWithPriceAsync(token1, token2, price1);
-            await AddNewPairWithPriceAsync(token1, token4, price2);
             await AddNewPairWithPriceAsync(token2, token3, price3);
             await AddNewPairWithPriceAsync(token4, token3, price4);
             await AddNewPairWithPriceAsync(token4, token5, price5);
             await AddNewPairWithPriceAsync(token3, token6, price6);
             await AddNewPairWithPriceAsync(token5, token6, price7);
             
-            await PriceContractStub.UpdateSwapTokenTraceInfo.SendAsync(new UpdateSwapTokenTraceInfoInput
-            {
-                TokenSymbol = token1,
-                TargetTokenSymbol = token4
-            });
-            var toke1Price = await GetSwapUnderlyingTokenPrice(token1);
-            toke1Price.ShouldBe("7.84237234");
-            
+            var toke4Price = await GetSwapUnderlyingTokenPrice(token4);
+            toke4Price.ShouldBe("50.27161755");
             await PriceContractStub.UpdateSwapTokenTraceInfo.SendAsync(new UpdateSwapTokenTraceInfoInput
             {
                 TokenSymbol = token4,
                 TargetTokenSymbol = token5
             });
-            
-            toke1Price = await GetSwapUnderlyingTokenPrice(token1);
-            toke1Price.ShouldBe("18.74059200");
-            
-            var toke4Price = await GetSwapUnderlyingTokenPrice(token4);
+            toke4Price = await GetSwapUnderlyingTokenPrice(token4);
             toke4Price.ShouldBe("120.1320");
         }
         

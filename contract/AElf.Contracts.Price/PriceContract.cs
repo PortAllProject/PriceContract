@@ -32,6 +32,7 @@ namespace AElf.Contracts.Price
             };
             InitializeSwapUnderlyingToken();
             State.Controller.Value = input.Controller;
+            State.TracePathLimit.Value = input.TracePathLimit > 0 ? input.TracePathLimit : 2;
             return new Empty();
         }
 
@@ -151,6 +152,15 @@ namespace AElf.Contracts.Price
         {
             Assert(State.Controller.Value == Context.Sender, $"Invalid sender: {Context.Sender}");
             State.OracleContract.Value = input.Oracle;
+            return new Empty();
+        }
+
+        public override Empty ChangeTracePathLimit(ChangeTracePathLimitInput input)
+        {
+            Assert(State.Controller.Value == Context.Sender, $"Invalid sender: {Context.Sender}");
+            Assert(input.NewPathLimit > 0,
+                $"Invalid input: {input.NewPathLimit}, trace path limit should be greater than 0");
+            State.TracePathLimit.Value = input.NewPathLimit;
             return new Empty();
         }
 
