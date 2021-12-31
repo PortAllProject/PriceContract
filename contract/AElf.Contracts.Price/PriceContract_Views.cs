@@ -19,7 +19,8 @@ namespace AElf.Contracts.Price
                 timestamp = State.SwapTokenPriceInfo[tokenKey].Timestamp;
             }
 
-            var price = TraceSwapTokenPrice(input.TokenSymbol, input.TargetTokenSymbol);
+            var limitPath = State.TracePathLimit.Value;
+            var price = TraceSwapTokenPrice(input.TokenSymbol, input.TargetTokenSymbol, ref limitPath);
             return new Price
             {
                 Value = price.ToString(),

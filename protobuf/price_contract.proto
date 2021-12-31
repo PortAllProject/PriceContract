@@ -146,7 +146,6 @@ message NewestSwapPriceUpdated{
   string price = 3;
   google.protobuf.Timestamp timestamp = 4;
   aelf.Hash query_id = 5;
-  string underlying_token_price = 6;
 }
 
 message NewestExchangePriceUpdated{

@@ -107,33 +107,49 @@ namespace AElf.Contracts.Price
                 $"Invalid path set for pair {originalTokenSymbol}-{targetSymbol}");
         }
 
-        private decimal TraceSwapTokenPrice(string originalTokenSymbol, string targetTokenSymbol)
+        private decimal TraceSwapTokenPrice(string originalTokenSymbol, string targetTokenSymbol, ref int limitPath)
         {
             var originalTokenTraceInfo = State.SwapTokenTraceInfo[originalTokenSymbol];
-            Assert(originalTokenTraceInfo != null, $"Token:{originalTokenSymbol} does not exist");
+            if (originalTokenTraceInfo == null)
+            {
+                return 0m;
+            }
+
             if (originalTokenSymbol == targetTokenSymbol)
             {
                 return 1m;
             }
 
             if (targetTokenSymbol != UnderlyingTokenSymbol)
-                return decimal.Round(GetTracedTokenPrice(originalTokenSymbol, targetTokenSymbol), PriceDecimals);
+            {
+                var tokenPrice = GetTracedTokenPrice(originalTokenSymbol, targetTokenSymbol);
+                if (tokenPrice != 0m)
+                {
+                    return decimal.Round(tokenPrice, PriceDecimals);
+                }
+            }
 
-            if (originalTokenTraceInfo.TracedPathWeight == InfinitePathWeight ||
-                originalTokenTraceInfo.TracedPathWeight > State.TracePathLimit.Value)
+            if (limitPath == 0)
             {
                 return 0m;
             }
 
+            limitPath -= 1;
             var nextTokenSymbol = originalTokenTraceInfo.TracedToken;
             var price = GetTracedTokenPrice(originalTokenSymbol, nextTokenSymbol);
-            return decimal.Round(price * TraceSwapTokenPrice(nextTokenSymbol, targetTokenSymbol), PriceDecimals);
+            return decimal.Round(price * TraceSwapTokenPrice(nextTokenSymbol, targetTokenSymbol, ref limitPath),
+                PriceDecimals);
         }
 
         private decimal GetTracedTokenPrice(string originalTokenSymbol, string nextTokenSymbol)
         {
             var tokenKey = GetTokenKey(originalTokenSymbol, nextTokenSymbol, out var isReverse);
             var price = State.SwapTokenPriceInfo[tokenKey];
+            if (price == null)
+            {
+                return 0m;
+            }
+
             return isReverse ? GetPriceReciprocal(price.Value) : decimal.Parse(price.Value);
         }
 

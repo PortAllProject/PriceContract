@@ -79,9 +79,6 @@ namespace AElf.Contracts.Price
                     tokenPrice.Timestamp);
             }
 
-            var underlyingTokenPrice = tokenPrice.TargetTokenSymbol == UnderlyingTokenSymbol
-                ? tokenPrice.Price
-                : TraceSwapTokenPrice(tokenPrice.TokenSymbol, UnderlyingTokenSymbol).ToString();
             Context.Fire(new NewestSwapPriceUpdated
             {
                 TokenSymbol = tokenPrice.TokenSymbol,
@@ -89,7 +86,6 @@ namespace AElf.Contracts.Price
                 Price = tokenPrice.Price,
                 Timestamp = tokenPrice.Timestamp,
                 QueryId = input.QueryId,
-                UnderlyingTokenPrice = underlyingTokenPrice
             });
             return new Empty();
         }
