@@ -9,16 +9,12 @@ namespace AElf.Contracts.Price
     {
         internal OracleContractContainer.OracleContractReferenceState OracleContract { get; set; }
         internal TokenContractContainer.TokenContractReferenceState TokenContract { get; set; }
-
         public SingletonState<Address> Controller { get; set; }
         public Int32State TracePathLimit { get; set; }
         public SingletonState<AuthorizedSwapTokenPriceQueryUsers> AuthorizedSwapTokenPriceQueryUsers { get; set; }
         public MappedState<Hash, bool> QueryIdMap { get; set; }
         public MappedState<string, PriceTraceInfo> SwapTokenTraceInfo { get; set; }
         public MappedState<string, Price> SwapTokenPriceInfo { get; set; }
-
         public MappedState<Address, string, Price> ExchangeTokenPriceInfo { get; set; }
-        // public MappedState<Hash, Hash> OrganizationMap { get; set; }
-        // public MappedState<Hash, string, string> ExchangePriceInfo { get; set; }
     }
 }
