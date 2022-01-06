@@ -79,8 +79,7 @@ namespace AElf.Contracts.Price
                 return;
             }
 
-            if (originalTokenInfo.TracedPathWeight > targetTokenPathWeight &&
-                targetTokenPathWeight >= MaxTracePathLimit ||
+            if (targetTokenPathWeight >= MaxTracePathLimit ||
                 originalTokenInfo.TracedPathWeight == targetTokenPathWeight + 1)
             {
                 return;
