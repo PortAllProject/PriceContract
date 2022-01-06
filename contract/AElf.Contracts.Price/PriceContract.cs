@@ -32,6 +32,7 @@ namespace AElf.Contracts.Price
             };
             InitializeSwapUnderlyingToken();
             State.Controller.Value = input.Controller;
+            Assert(input.TracePathLimit <= MaxTracePathLimit, $"TracePathLimit should less than {MaxTracePathLimit}");
             State.TracePathLimit.Value = input.TracePathLimit > 0 ? input.TracePathLimit : 2;
             return new Empty();
         }
