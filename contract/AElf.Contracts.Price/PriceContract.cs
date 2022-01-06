@@ -154,8 +154,8 @@ namespace AElf.Contracts.Price
         public override Empty ChangeTracePathLimit(ChangeTracePathLimitInput input)
         {
             Assert(State.Controller.Value == Context.Sender, $"Invalid sender: {Context.Sender}");
-            Assert(input.NewPathLimit > 0,
-                $"Invalid input: {input.NewPathLimit}, trace path limit should be greater than 0");
+            Assert(input.NewPathLimit > 0 && input.NewPathLimit <= MaxTracePathLimit,
+                $"Invalid input: {input.NewPathLimit}, trace path limit should be greater than 0 and less than {MaxTracePathLimit}");
             State.TracePathLimit.Value = input.NewPathLimit;
             return new Empty();
         }
