@@ -63,8 +63,7 @@ namespace AElf.Contracts.Price
             var originalTokenInfo = State.SwapTokenTraceInfo[originalTokenSymbol];
             var targetSymbolTokenInfo = State.SwapTokenTraceInfo[targetSymbol];
             var targetTokenPathWeight = targetSymbolTokenInfo.TracedPathWeight;
-            if (originalTokenInfo.TracedPathWeight == targetTokenPathWeight ||
-                originalTokenInfo.TracedPathWeight == targetTokenPathWeight + 1)
+            if (originalTokenInfo.TracedPathWeight == targetTokenPathWeight)
             {
                 return;
             }
@@ -79,8 +78,10 @@ namespace AElf.Contracts.Price
                 UpdateTokenPriceTraceInfo(targetSymbol, originalTokenSymbol);
                 return;
             }
-            
-            if (originalTokenInfo.TracedPathWeight > targetTokenPathWeight && targetTokenPathWeight >= MaxTracePathLimit)
+
+            if (originalTokenInfo.TracedPathWeight > targetTokenPathWeight &&
+                targetTokenPathWeight >= MaxTracePathLimit ||
+                originalTokenInfo.TracedPathWeight == targetTokenPathWeight + 1)
             {
                 return;
             }
