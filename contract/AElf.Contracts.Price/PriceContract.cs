@@ -43,8 +43,8 @@ namespace AElf.Contracts.Price
             Assert(authorizedUsers.Contains(Context.Sender), $"UnAuthorized sender {Context.Sender}");
             const string title = "TokenSwapPrice";
             var options = new List<string> {$"{input.TokenSymbol}-{input.TargetTokenSymbol}"};
-            var queryId = CreateQuery(input, title, options, nameof(RecordSwapTokenPrice));
-            State.QueryIdMap[queryId] = true;
+            var queryId = CreateQuery(input, title, options, nameof(RecordSwapTokenPrice), out var queryIdWithOracle);
+            State.QueryIdMap[queryIdWithOracle] = true;
             return queryId;
         }
 
@@ -52,16 +52,15 @@ namespace AElf.Contracts.Price
         {
             const string title = "ExchangeTokenPrice";
             var options = new List<string> {$"{input.TokenSymbol}-{input.TargetTokenSymbol}"};
-            var queryId = CreateQuery(input, title, options, nameof(RecordExchangeTokenPrice));
-            State.QueryIdMap[queryId] = true;
+            var queryId = CreateQuery(input, title, options, nameof(RecordExchangeTokenPrice),
+                out var queryIdWithOracle);
+            State.QueryIdMap[queryIdWithOracle] = true;
             return queryId;
         }
 
         public override Empty RecordSwapTokenPrice(CallbackInput input)
         {
-            Assert(Context.Sender == State.OracleContract.Value, "No permission.");
-            Assert(State.QueryIdMap[input.QueryId], $"Query ID:{input.QueryId} does not exist");
-            State.QueryIdMap.Remove(input.QueryId);
+            CheckQueryId(input.QueryId);
             var tokenPrice = new TokenPrice();
             tokenPrice.MergeFrom(input.Result);
             var originalToken = State.SwapTokenTraceInfo[tokenPrice.TokenSymbol];
@@ -93,9 +92,7 @@ namespace AElf.Contracts.Price
 
         public override Empty RecordExchangeTokenPrice(CallbackInput input)
         {
-            Assert(Context.Sender == State.OracleContract.Value, "No permission.");
-            Assert(State.QueryIdMap[input.QueryId], $"Query ID:{input.QueryId} does not exist");
-            State.QueryIdMap.Remove(input.QueryId);
+            CheckQueryId(input.QueryId);
             var tokenPrice = new TokenPrice();
             tokenPrice.MergeFrom(input.Result);
             var tokenKey = GetTokenKey(tokenPrice.TokenSymbol, tokenPrice.TargetTokenSymbol, out var isReverse);
@@ -161,7 +158,7 @@ namespace AElf.Contracts.Price
             return new Empty();
         }
 
-        private Hash CreateQuery(QueryTokenPriceInput input, string title, IEnumerable<string> options, string callback)
+        private Hash CreateQuery(QueryTokenPriceInput input, string title, IEnumerable<string> options, string callback, out Hash queryIdWithOracleInfo)
         {
             State.TokenContract.Approve.Send(new ApproveInput
             {
@@ -190,8 +187,9 @@ namespace AElf.Contracts.Price
             };
             State.OracleContract.Query.Send(queryInput);
 
-            var queryIdFromHash = HashHelper.ComputeFrom(queryInput);
-            var queryId = Context.GenerateId(State.OracleContract.Value, queryIdFromHash);
+            var queryId = HashHelper.ComputeFrom(queryInput);
+            var oracleHash =  HashHelper.ComputeFrom(State.OracleContract.Value);
+            queryIdWithOracleInfo = HashHelper.ConcatAndCompute(oracleHash, queryId);
             return queryId;
         }
 
@@ -218,6 +216,15 @@ namespace AElf.Contracts.Price
         {
             Assert(currentTimestamp < newTimestamp,
                 $"Expired data for pair {token1}:{token2}. Data timestamp in contract: {currentTimestamp}; record data timestamp: {newTimestamp}");
+        }
+        
+        private void CheckQueryId(Hash queryId)
+        {
+            Assert(Context.Sender == State.OracleContract.Value, "No permission.");
+            var oracleHash =  HashHelper.ComputeFrom(State.OracleContract.Value);
+            var oracleQueryId = HashHelper.ConcatAndCompute(oracleHash, queryId);
+            Assert(State.QueryIdMap[oracleQueryId], $"Query ID:{queryId} does not exist");
+            State.QueryIdMap.Remove(oracleQueryId);
         }
     }
 }

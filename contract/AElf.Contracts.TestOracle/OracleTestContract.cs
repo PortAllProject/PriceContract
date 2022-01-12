@@ -1,7 +1,6 @@
 ﻿using AElf.Contracts.Oracle;
 using AElf.Contracts.TestsOracle;
 using AElf.Sdk.CSharp;
-using AElf.Sdk.CSharp.State;
 using AElf.Types;
 using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
