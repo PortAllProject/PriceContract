@@ -160,11 +160,20 @@ namespace AElf.Contracts.Price
 
         private Hash CreateQuery(QueryTokenPriceInput input, string title, IEnumerable<string> options, string callback, out Hash queryIdWithOracleInfo)
         {
+            var oracleToken = State.OracleContract.GetOracleTokenSymbol.Call(new Empty()).Value;
             State.TokenContract.Approve.Send(new ApproveInput
             {
                 Spender = State.OracleContract.Value,
                 Amount = Payment,
-                Symbol = State.OracleContract.GetOracleTokenSymbol.Call(new Empty()).Value
+                Symbol = oracleToken
+            });
+            
+            State.TokenContract.TransferFrom.Send(new TransferFromInput
+            {
+                From = Context.Sender,
+                To = State.OracleContract.Value,
+                Amount = Payment,
+                Symbol = oracleToken
             });
 
             var queryInput = new QueryInput
