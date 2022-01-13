@@ -44,7 +44,7 @@ namespace AElf.Contracts.Price
             const string title = "TokenSwapPrice";
             var options = new List<string> {$"{input.TokenSymbol}-{input.TargetTokenSymbol}"};
             var queryId = CreateQuery(input, title, options, nameof(RecordSwapTokenPrice), out var queryIdWithOracle);
-            State.QueryIdMap[queryIdWithOracle] = true;
+            //State.QueryIdMap[queryIdWithOracle] = true;
             return queryId;
         }
 
@@ -54,7 +54,7 @@ namespace AElf.Contracts.Price
             var options = new List<string> {$"{input.TokenSymbol}-{input.TargetTokenSymbol}"};
             var queryId = CreateQuery(input, title, options, nameof(RecordExchangeTokenPrice),
                 out var queryIdWithOracle);
-            State.QueryIdMap[queryIdWithOracle] = true;
+            //State.QueryIdMap[queryIdWithOracle] = true;
             return queryId;
         }
 
@@ -188,8 +188,8 @@ namespace AElf.Contracts.Price
             State.OracleContract.Query.Send(queryInput);
 
             var queryId = HashHelper.ComputeFrom(queryInput);
-            var oracleHash =  HashHelper.ComputeFrom(State.OracleContract.Value);
-            queryIdWithOracleInfo = HashHelper.ConcatAndCompute(oracleHash, queryId);
+            //var oracleHash =  HashHelper.ComputeFrom(State.OracleContract.Value);
+            queryIdWithOracleInfo = Context.GenerateId(State.OracleContract.Value, queryId);
             return queryId;
         }
 
@@ -221,10 +221,10 @@ namespace AElf.Contracts.Price
         private void CheckQueryId(Hash queryId)
         {
             Assert(Context.Sender == State.OracleContract.Value, "No permission.");
-            var oracleHash =  HashHelper.ComputeFrom(State.OracleContract.Value);
-            var oracleQueryId = HashHelper.ConcatAndCompute(oracleHash, queryId);
-            Assert(State.QueryIdMap[oracleQueryId], $"Query ID:{queryId} does not exist");
-            State.QueryIdMap.Remove(oracleQueryId);
+            // var oracleHash =  HashHelper.ComputeFrom(State.OracleContract.Value);
+            // var oracleQueryId = HashHelper.ConcatAndCompute(oracleHash, queryId);
+            // Assert(State.QueryIdMap[oracleQueryId], $"Query ID:{queryId} does not exist");
+            // State.QueryIdMap.Remove(oracleQueryId);
         }
     }
 }

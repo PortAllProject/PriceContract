@@ -29,21 +29,21 @@ namespace AElf.Contracts.Price.Test
             txResult.TransactionResult.Status.ShouldBe(TransactionResultStatus.Failed);
         }
 
-        [Fact]
-        public async Task RecordTokenPrice_Without_Query_Id_Should_Fail()
-        {
-            var queryId = Hash.Empty;
-
-            var result = await OracleContractStub.RecordTokenPrice.SendWithExceptionAsync(new TokenPriceInfo
-            {
-                CallBackAddress = PriceContractAddress,
-                CallBackMethodName = nameof(PriceContractStub.RecordExchangeTokenPrice),
-                QueryId = queryId,
-                TokenPrice = GenerateTokenPriceInfo("ELF", "LLYP", "1.2345", Timestamp.FromDateTime(DateTime.UtcNow)),
-                OracleNodes = {OracleNodes}
-            });
-            result.TransactionResult.Status.ShouldBe(TransactionResultStatus.Failed);
-        }
+        // [Fact]
+        // public async Task RecordTokenPrice_Without_Query_Id_Should_Fail()
+        // {
+        //     var queryId = Hash.Empty;
+        //
+        //     var result = await OracleContractStub.RecordTokenPrice.SendWithExceptionAsync(new TokenPriceInfo
+        //     {
+        //         CallBackAddress = PriceContractAddress,
+        //         CallBackMethodName = nameof(PriceContractStub.RecordExchangeTokenPrice),
+        //         QueryId = queryId,
+        //         TokenPrice = GenerateTokenPriceInfo("ELF", "LLYP", "1.2345", Timestamp.FromDateTime(DateTime.UtcNow)),
+        //         OracleNodes = {OracleNodes}
+        //     });
+        //     result.TransactionResult.Status.ShouldBe(TransactionResultStatus.Failed);
+        // }
 
         private async Task InitializePriceContractAsync()
         {

@@ -85,13 +85,13 @@ namespace AElf.Contracts.Price
             return result;
         }
 
-        public override IsQueryIdExisted CheckQueryIdIfExisted(Hash input)
-        {
-            return new IsQueryIdExisted
-            {
-                Value = State.QueryIdMap[input]
-            };
-        }
+        // public override IsQueryIdExisted CheckQueryIdIfExisted(Hash input)
+        // {
+        //     return new IsQueryIdExisted
+        //     {
+        //         Value = State.QueryIdMap[input]
+        //     };
+        // }
 
         public override AuthorizedSwapTokenPriceQueryUsers GetAuthorizedSwapTokenPriceQueryUsers(Empty input)
         {
