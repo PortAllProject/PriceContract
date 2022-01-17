@@ -7,6 +7,7 @@ namespace AElf.Contracts.Price
     {
         public override Price GetSwapTokenPriceInfo(GetSwapTokenPriceInfoInput input)
         {
+            Assert(!string.IsNullOrEmpty(input.TokenSymbol), $"Invalid token symbol: {input.TokenSymbol}");
             if (string.IsNullOrEmpty(input.TargetTokenSymbol))
             {
                 input.TargetTokenSymbol = UnderlyingTokenSymbol;
@@ -27,7 +28,7 @@ namespace AElf.Contracts.Price
                 Timestamp = timestamp
             };
         }
-        
+
         public override BatchPrices GetBatchSwapTokenPriceInfo(GetBatchSwapTokenPriceInfoInput input)
         {
             var result = new BatchPrices();
@@ -48,6 +49,7 @@ namespace AElf.Contracts.Price
 
         public override Price GetExchangeTokenPriceInfo(GetExchangeTokenPriceInfoInput input)
         {
+            Assert(!string.IsNullOrEmpty(input.TokenSymbol), $"Invalid token symbol: {input.TokenSymbol}");
             if (string.IsNullOrEmpty(input.TargetTokenSymbol))
             {
                 input.TargetTokenSymbol = UnderlyingTokenSymbol;
@@ -85,13 +87,13 @@ namespace AElf.Contracts.Price
             return result;
         }
 
-        // public override IsQueryIdExisted CheckQueryIdIfExisted(Hash input)
-        // {
-        //     return new IsQueryIdExisted
-        //     {
-        //         Value = State.QueryIdMap[input]
-        //     };
-        // }
+        public override IsQueryIdExisted CheckQueryIdIfExisted(Hash input)
+        {
+            return new IsQueryIdExisted
+            {
+                Value = State.QueryIdMap[input]
+            };
+        }
 
         public override AuthorizedSwapTokenPriceQueryUsers GetAuthorizedSwapTokenPriceQueryUsers(Empty input)
         {

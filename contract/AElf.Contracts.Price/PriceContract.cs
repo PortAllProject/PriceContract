@@ -43,8 +43,8 @@ namespace AElf.Contracts.Price
             Assert(authorizedUsers.Contains(Context.Sender), $"UnAuthorized sender {Context.Sender}");
             const string title = "TokenSwapPrice";
             var options = new List<string> {$"{input.TokenSymbol}-{input.TargetTokenSymbol}"};
-            var queryId = CreateQuery(input, title, options, nameof(RecordSwapTokenPrice), out var queryIdWithOracle);
-            //State.QueryIdMap[queryIdWithOracle] = true;
+            var queryId = CreateQuery(input, title, options, nameof(RecordSwapTokenPrice));
+            State.QueryIdMap[queryId] = true;
             return queryId;
         }
 
@@ -52,9 +52,8 @@ namespace AElf.Contracts.Price
         {
             const string title = "ExchangeTokenPrice";
             var options = new List<string> {$"{input.TokenSymbol}-{input.TargetTokenSymbol}"};
-            var queryId = CreateQuery(input, title, options, nameof(RecordExchangeTokenPrice),
-                out var queryIdWithOracle);
-            //State.QueryIdMap[queryIdWithOracle] = true;
+            var queryId = CreateQuery(input, title, options, nameof(RecordExchangeTokenPrice));
+            State.QueryIdMap[queryId] = true;
             return queryId;
         }
 
@@ -158,7 +157,7 @@ namespace AElf.Contracts.Price
             return new Empty();
         }
 
-        private Hash CreateQuery(QueryTokenPriceInput input, string title, IEnumerable<string> options, string callback, out Hash queryIdWithOracleInfo)
+        private Hash CreateQuery(QueryTokenPriceInput input, string title, IEnumerable<string> options, string callback)
         {
             var oracleToken = State.OracleContract.GetOracleTokenSymbol.Call(new Empty()).Value;
             State.TokenContract.Approve.Send(new ApproveInput
@@ -195,10 +194,9 @@ namespace AElf.Contracts.Price
                 AggregateOption = AggregatorOption
             };
             State.OracleContract.Query.Send(queryInput);
-
-            var queryId = HashHelper.ComputeFrom(queryInput);
-            //var oracleHash =  HashHelper.ComputeFrom(State.OracleContract.Value);
-            queryIdWithOracleInfo = Context.GenerateId(State.OracleContract.Value, queryId);
+            var queryIdFromHash = HashHelper.ComputeFrom(queryInput);
+            var queryId = Context.GenerateId(State.OracleContract.Value, queryIdFromHash);
+            State.QueryIdMap[queryId] = true;
             return queryId;
         }
 
@@ -230,10 +228,8 @@ namespace AElf.Contracts.Price
         private void CheckQueryId(Hash queryId)
         {
             Assert(Context.Sender == State.OracleContract.Value, "No permission.");
-            // var oracleHash =  HashHelper.ComputeFrom(State.OracleContract.Value);
-            // var oracleQueryId = HashHelper.ConcatAndCompute(oracleHash, queryId);
-            // Assert(State.QueryIdMap[oracleQueryId], $"Query ID:{queryId} does not exist");
-            // State.QueryIdMap.Remove(oracleQueryId);
+            Assert(State.QueryIdMap[queryId], $"Query ID:{queryId} does not exist");
+            State.QueryIdMap.Remove(queryId);
         }
     }
 }
