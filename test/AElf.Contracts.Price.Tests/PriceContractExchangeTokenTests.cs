@@ -11,15 +11,15 @@ namespace AElf.Contracts.Price.Test
 {
     public partial class PriceContractTests
     {
-        // [Fact]
-        // public async Task QueryExchangeTokenPrice_QueryId_Should_Be_Logged()
-        // {
-        //     var queryId = await QueryExchangeTokenPrice("ELF", "LLYP");
-        //     var queryIdWithOracle =
-        //         HashHelper.ConcatAndCompute(HashHelper.ComputeFrom(OracleTestContractAddress), queryId);
-        //     var isQueryIdLogged = await PriceContractStub.CheckQueryIdIfExisted.CallAsync(queryIdWithOracle);
-        //     isQueryIdLogged.Value.ShouldBeTrue();
-        // }
+        [Fact]
+        public async Task QueryExchangeTokenPrice_QueryId_Should_Be_Logged()
+        {
+            var queryId = await QueryExchangeTokenPrice("ELF", "LLYP");
+            var queryIdWithOracle =
+                HashHelper.ConcatAndCompute(HashHelper.ComputeFrom(OracleTestContractAddress), queryId);
+            var isQueryIdLogged = await PriceContractStub.CheckQueryIdIfExisted.CallAsync(queryIdWithOracle);
+            isQueryIdLogged.Value.ShouldBeTrue();
+        }
 
         [Fact]
         public async Task RecordExchangeTokenPrice_Without_Controller_Should_Fail()
