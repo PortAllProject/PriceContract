@@ -16,9 +16,7 @@ namespace AElf.Contracts.Price.Test
         public async Task QuerySwapTokenPrice_QueryId_Should_Be_Logged()
         {
             var queryId = await QuerySwapTokenPrice("ELF", "LLYP");
-            var queryIdWithOracle =
-                HashHelper.ConcatAndCompute(HashHelper.ComputeFrom(OracleTestContractAddress), queryId);
-            var isQueryIdLogged = await PriceContractStub.CheckQueryIdIfExisted.CallAsync(queryIdWithOracle);
+            var isQueryIdLogged = await PriceContractStub.CheckQueryIdIfExisted.CallAsync(queryId);
             isQueryIdLogged.Value.ShouldBeTrue();
         }
         

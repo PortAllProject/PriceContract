@@ -68,9 +68,15 @@ namespace AElf.Contracts.Price.Test
             });
             await TokenContractStub.Issue.SendAsync(new IssueInput
             {
-                Amount = 100_000_000L,
+                Amount = 1000_000_000L,
                 Symbol = TokenSymbol,
                 To = DefaultSender
+            });
+            await TokenContractStub.Approve.SendAsync(new ApproveInput
+            {
+                Amount = 1000_000_000L,
+                Symbol = TokenSymbol,
+                Spender = PriceContractAddress
             });
         }
 

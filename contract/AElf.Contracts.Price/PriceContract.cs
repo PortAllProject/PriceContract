@@ -62,6 +62,7 @@ namespace AElf.Contracts.Price
             CheckQueryId(input.QueryId);
             var tokenPrice = new TokenPrice();
             tokenPrice.MergeFrom(input.Result);
+            AssertValidTokenPriceInfo(tokenPrice);
             var originalToken = State.SwapTokenTraceInfo[tokenPrice.TokenSymbol];
             if (originalToken != null &&
                 originalToken.TokenList.Any(x => x == tokenPrice.TargetTokenSymbol))
@@ -94,6 +95,7 @@ namespace AElf.Contracts.Price
             CheckQueryId(input.QueryId);
             var tokenPrice = new TokenPrice();
             tokenPrice.MergeFrom(input.Result);
+            AssertValidTokenPriceInfo(tokenPrice);
             var tokenKey = GetTokenKey(tokenPrice.TokenSymbol, tokenPrice.TargetTokenSymbol, out var isReverse);
             var price = isReverse ? GetPriceReciprocalStr(tokenPrice.Price) : tokenPrice.Price;
             foreach (var node in input.OracleNodes)
@@ -209,11 +211,11 @@ namespace AElf.Contracts.Price
             if (comparision < 0)
             {
                 isAdjustOrder = true;
-                tokenKey = token2 + token1;
+                tokenKey = $"{token2}-{token1}";
             }
             else
             {
-                tokenKey = token1 + token2;
+                tokenKey = $"{token1}-{token2}";
             }
 
             return tokenKey;
@@ -230,6 +232,17 @@ namespace AElf.Contracts.Price
             Assert(Context.Sender == State.OracleContract.Value, "No permission.");
             Assert(State.QueryIdMap[queryId], $"Query ID:{queryId} does not exist");
             State.QueryIdMap.Remove(queryId);
+        }
+
+        private void AssertValidTokenPriceInfo(TokenPrice tokenPrice)
+        {
+            AssertValidToken(tokenPrice.TokenSymbol);
+            AssertValidToken(tokenPrice.TargetTokenSymbol);
+        }
+
+        private void AssertValidToken(string token)
+        {
+            Assert(!string.IsNullOrEmpty(token), "Token should not be null");
         }
     }
 }

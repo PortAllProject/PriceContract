@@ -7,7 +7,7 @@ namespace AElf.Contracts.Price
     {
         public override Price GetSwapTokenPriceInfo(GetSwapTokenPriceInfoInput input)
         {
-            Assert(!string.IsNullOrEmpty(input.TokenSymbol), $"Invalid token symbol: {input.TokenSymbol}");
+            AssertValidToken(input.TokenSymbol);
             if (string.IsNullOrEmpty(input.TargetTokenSymbol))
             {
                 input.TargetTokenSymbol = UnderlyingTokenSymbol;
@@ -49,7 +49,7 @@ namespace AElf.Contracts.Price
 
         public override Price GetExchangeTokenPriceInfo(GetExchangeTokenPriceInfoInput input)
         {
-            Assert(!string.IsNullOrEmpty(input.TokenSymbol), $"Invalid token symbol: {input.TokenSymbol}");
+            AssertValidToken(input.TokenSymbol);
             if (string.IsNullOrEmpty(input.TargetTokenSymbol))
             {
                 input.TargetTokenSymbol = UnderlyingTokenSymbol;
