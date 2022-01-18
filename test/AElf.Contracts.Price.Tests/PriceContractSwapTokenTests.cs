@@ -74,6 +74,19 @@ namespace AElf.Contracts.Price.Test
         }
         
         [Fact]
+        public async Task GetSwapTokenPriceInfo_With_Same_Token_Should_Return_One()
+        {
+            var token1 = "ELF";
+            var priceInfo = await PriceContractStub.GetSwapTokenPriceInfo.CallAsync(
+                new GetSwapTokenPriceInfoInput
+                {
+                    TokenSymbol = token1,
+                    TargetTokenSymbol = token1
+                });
+            priceInfo.Value.ShouldBe("1");
+        }
+        
+        [Fact]
         public async Task RecordSwapTokenPrice_Update_Price_Should_Get_Right_Price()
         {
             var token1 = "ELF";
@@ -309,17 +322,12 @@ namespace AElf.Contracts.Price.Test
         public async Task RecordSwapTokenPrice_With_Same_Token_Symbol_Should_Fail()
         {
             var token1 = "GM";
-            var queryId = await QuerySwapTokenPrice(token1, token1);
-            var timestamp = Timestamp.FromDateTime(DateTime.UtcNow);
-            var txResult = await OracleContractStub.RecordTokenPrice.SendWithExceptionAsync(new TokenPriceInfo
+            var txResult = await PriceContractStub.QuerySwapTokenPrice.SendWithExceptionAsync(new QueryTokenPriceInput
             {
-                CallBackAddress = PriceContractAddress,
-                CallBackMethodName = nameof(PriceContractStub.RecordSwapTokenPrice),
-                QueryId = queryId,
-                TokenPrice = GenerateTokenPriceInfo(token1, token1, "1", timestamp),
-                OracleNodes = {OracleNodes}
+                DesignatedNodes = {OracleNodes},
+                TokenSymbol = token1,
+                TargetTokenSymbol = token1
             });
-            
             txResult.TransactionResult.Status.ShouldBe(TransactionResultStatus.Failed);
             txResult.TransactionResult.Error.ShouldContain("token1: GM, token2: GM are same");
         }

@@ -13,6 +13,14 @@ namespace AElf.Contracts.Price
                 input.TargetTokenSymbol = UnderlyingTokenSymbol;
             }
 
+            if (input.TargetTokenSymbol == input.TokenSymbol)
+            {
+                return new Price
+                {
+                    Value = "1"
+                };
+            }
+
             var tokenKey = GetTokenKey(input.TokenSymbol, input.TargetTokenSymbol, out _);
             Timestamp timestamp = null;
             if (State.SwapTokenPriceInfo[tokenKey] != null)
@@ -53,6 +61,14 @@ namespace AElf.Contracts.Price
             if (string.IsNullOrEmpty(input.TargetTokenSymbol))
             {
                 input.TargetTokenSymbol = UnderlyingTokenSymbol;
+            }
+
+            if (input.TargetTokenSymbol == input.TokenSymbol)
+            {
+                return new Price
+                {
+                    Value = "1"
+                };
             }
 
             var tokenKey = GetTokenKey(input.TokenSymbol, input.TargetTokenSymbol, out var isReverse);

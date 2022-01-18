@@ -43,6 +43,7 @@ namespace AElf.Contracts.Price
         {
             var authorizedUsers = State.AuthorizedSwapTokenPriceInquirers.Value.List;
             Assert(authorizedUsers.Contains(Context.Sender), $"UnAuthorized sender {Context.Sender}");
+            GetTokenKey(input.TokenSymbol, input.TargetTokenSymbol, out _);
             const string title = "TokenSwapPrice";
             var options = new List<string> {$"{input.TokenSymbol}-{input.TargetTokenSymbol}"};
             var queryId = CreateQuery(input, title, options, nameof(RecordSwapTokenPrice));
@@ -52,6 +53,7 @@ namespace AElf.Contracts.Price
 
         public override Hash QueryExchangeTokenPrice(QueryTokenPriceInput input)
         {
+            GetTokenKey(input.TokenSymbol, input.TargetTokenSymbol, out _);
             const string title = "ExchangeTokenPrice";
             var options = new List<string> {$"{input.TokenSymbol}-{input.TargetTokenSymbol}"};
             var queryId = CreateQuery(input, title, options, nameof(RecordExchangeTokenPrice));
