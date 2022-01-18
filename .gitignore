@@ -300,3 +300,6 @@ chain/scripts/patcher/*
 
 scripts/patcher/*
 src/AElf.Boilerplate.Launcher/contracts/*
+
+#ci
+CodeCoverage/*
