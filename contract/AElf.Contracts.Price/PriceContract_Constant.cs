@@ -5,7 +5,7 @@ namespace AElf.Contracts.Price
         public const int InfinitePathWeight = int.MaxValue - 1;
         public const string UnderlyingTokenSymbol = "USDT";
         public const int PriceDecimals = 8;
-        public const int Payment = 10_0000;
+        public const int Payment = 10_000_000;
         public const int AggregatorOption = 2;
         public const int MaxTracePathLimit = 3;
     }

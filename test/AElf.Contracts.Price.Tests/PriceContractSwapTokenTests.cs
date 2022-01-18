@@ -231,7 +231,7 @@ namespace AElf.Contracts.Price.Test
                 TargetTokenSymbol = token3
             });
             txResult.TransactionResult.Status.ShouldBe(TransactionResultStatus.Failed);
-            txResult.TransactionResult.Error.ShouldContain("Invalid sender");
+            txResult.TransactionResult.Error.ShouldContain("not controller");
         }
         
         [Fact]
@@ -352,7 +352,7 @@ namespace AElf.Contracts.Price.Test
 
             var txResult = await unAuthorizedPriceStub.UpdateAuthorizedSwapTokenPriceQueryUsers.SendWithExceptionAsync(newUserList);
             txResult.TransactionResult.Status.ShouldBe(TransactionResultStatus.Failed);
-            txResult.TransactionResult.Error.ShouldContain("Invalid sender");
+            txResult.TransactionResult.Error.ShouldContain("not controller");
         }
 
         [Fact]

@@ -11,6 +11,7 @@ namespace AElf.Contracts.Price
         internal TokenContractContainer.TokenContractReferenceState TokenContract { get; set; }
         public SingletonState<Address> Controller { get; set; }
         public Int32State TracePathLimit { get; set; }
+        public Int64State QueryFee { get; set; }
         public SingletonState<AuthorizedSwapTokenPriceQueryUsers> AuthorizedSwapTokenPriceQueryUsers { get; set; }
         public MappedState<Hash, bool> QueryIdMap { get; set; }
         public MappedState<string, PriceTraceInfo> SwapTokenTraceInfo { get; set; }

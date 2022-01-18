@@ -24,6 +24,7 @@ service PriceContract {
 
   rpc ChangeOracle (ChangeOracleInput) returns (google.protobuf.Empty) {}
   rpc ChangeTracePathLimit(ChangeTracePathLimitInput) returns (google.protobuf.Empty) {}
+  rpc SetQueryFee(SetQueryFeeInput) returns (google.protobuf.Empty) {}
   // Views
   rpc GetSwapTokenPriceInfo (GetSwapTokenPriceInfoInput) returns (Price) {
     option (aelf.is_view) = true;
@@ -59,6 +60,7 @@ message InitializeInput{
   aelf.Address controller = 2;
   repeated aelf.Address authorized_users = 3;
   int32 trace_path_limit = 4;
+  int64 query_fee = 5;
 }
 
 message QueryTokenPriceInput{
@@ -133,6 +135,10 @@ message ChangeOracleInput{
 
 message ChangeTracePathLimitInput{
   int32 new_path_limit = 1;
+}
+
+message SetQueryFeeInput{
+  int64 new_query_fee = 1;
 }
 
 message TracePathLimit{

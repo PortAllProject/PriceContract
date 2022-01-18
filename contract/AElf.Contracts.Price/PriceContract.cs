@@ -33,6 +33,8 @@ namespace AElf.Contracts.Price
             InitializeSwapUnderlyingToken();
             State.Controller.Value = input.Controller;
             Assert(input.TracePathLimit <= MaxTracePathLimit, $"TracePathLimit should less than {MaxTracePathLimit}");
+            Assert(input.QueryFee >= 0, $"Invalid fee set:{input.QueryFee}");
+            State.QueryFee.Value = input.QueryFee == 0 ? Payment : input.QueryFee;
             State.TracePathLimit.Value = input.TracePathLimit > 0 ? input.TracePathLimit : 2;
             return new Empty();
         }
@@ -131,41 +133,51 @@ namespace AElf.Contracts.Price
 
         public override Empty UpdateSwapTokenTraceInfo(UpdateSwapTokenTraceInfoInput input)
         {
-            Assert(State.Controller.Value == Context.Sender, $"Invalid sender: {Context.Sender}");
+            CheckSenderIsController();
             AssignTokenPriceTraceInfo(input.TokenSymbol, input.TargetTokenSymbol);
             return new Empty();
         }
 
         public override Empty UpdateAuthorizedSwapTokenPriceQueryUsers(AuthorizedSwapTokenPriceQueryUsers input)
         {
-            Assert(State.Controller.Value == Context.Sender, $"Invalid sender: {Context.Sender}");
+            CheckSenderIsController();
             State.AuthorizedSwapTokenPriceQueryUsers.Value = input;
             return new Empty();
         }
 
         public override Empty ChangeOracle(ChangeOracleInput input)
         {
-            Assert(State.Controller.Value == Context.Sender, $"Invalid sender: {Context.Sender}");
+            CheckSenderIsController();
             State.OracleContract.Value = input.Oracle;
             return new Empty();
         }
 
         public override Empty ChangeTracePathLimit(ChangeTracePathLimitInput input)
         {
-            Assert(State.Controller.Value == Context.Sender, $"Invalid sender: {Context.Sender}");
+            CheckSenderIsController();
             Assert(input.NewPathLimit > 0 && input.NewPathLimit <= MaxTracePathLimit,
                 $"Invalid input: {input.NewPathLimit}, trace path limit should be greater than 0 and less than {MaxTracePathLimit}");
             State.TracePathLimit.Value = input.NewPathLimit;
             return new Empty();
         }
 
+        public override Empty SetQueryFee(SetQueryFeeInput input)
+        {
+            CheckSenderIsController();
+            var fee = input.NewQueryFee;
+            Assert(fee > 0, $"Fee: {fee} should be greater than 0");
+            State.QueryFee.Value = fee;
+            return new Empty();
+        }
+
         private Hash CreateQuery(QueryTokenPriceInput input, string title, IEnumerable<string> options, string callback)
         {
             var oracleToken = State.OracleContract.GetOracleTokenSymbol.Call(new Empty()).Value;
+            var fee = State.QueryFee.Value;
             State.TokenContract.Approve.Send(new ApproveInput
             {
                 Spender = State.OracleContract.Value,
-                Amount = Payment,
+                Amount = fee,
                 Symbol = oracleToken
             });
             
@@ -173,7 +185,7 @@ namespace AElf.Contracts.Price
             {
                 From = Context.Sender,
                 To = State.OracleContract.Value,
-                Amount = Payment,
+                Amount = fee,
                 Symbol = oracleToken
             });
 
@@ -191,7 +203,7 @@ namespace AElf.Contracts.Price
                     MethodName = callback
                 },
                 DesignatedNodeList = new AddressList {Value = {input.DesignatedNodes}},
-                Payment = Payment,
+                Payment = fee,
                 AggregateThreshold = input.AggregateThreshold,
                 AggregateOption = AggregatorOption
             };
@@ -232,6 +244,11 @@ namespace AElf.Contracts.Price
             Assert(Context.Sender == State.OracleContract.Value, "No permission.");
             Assert(State.QueryIdMap[queryId], $"Query ID:{queryId} does not exist");
             State.QueryIdMap.Remove(queryId);
+        }
+
+        private void CheckSenderIsController()
+        {
+            Assert(State.Controller.Value == Context.Sender, $"Sender: {Context.Sender} is not controller");
         }
 
         private void AssertValidTokenPriceInfo(TokenPrice tokenPrice)
