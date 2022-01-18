@@ -107,5 +107,10 @@ namespace AElf.Contracts.Price
                 PathLimit = State.TracePathLimit.Value
             };
         }
+
+        public override PriceTraceInfo GetSwapTokenInfo(GetSwapTokenInfoInput input)
+        {
+            return State.SwapTokenTraceInfo[input.Token];
+        }
     }
 }

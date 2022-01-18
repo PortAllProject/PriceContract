@@ -336,8 +336,15 @@ namespace AElf.Contracts.Price.Test
                     TokenSymbol = token1,
                     TargetTokenSymbol = UnderlyingTokenSymbol
                 });
-            
             priceInfo.Value.ShouldBe("0");
+
+            var swapTokenInfo = await PriceContractStub.GetSwapTokenInfo.CallAsync(new GetSwapTokenInfoInput
+            {
+                Token = token1
+            });
+            swapTokenInfo.TokenList.Count.ShouldBe(1);
+            swapTokenInfo.TokenList[0].ShouldBe(token2);
+            swapTokenInfo.TracedToken.ShouldBeEmpty();
         }
 
         [Fact]

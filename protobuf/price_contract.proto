@@ -15,7 +15,7 @@ service PriceContract {
 
   rpc QuerySwapTokenPrice (QueryTokenPriceInput) returns (aelf.Hash) {}
   rpc QueryExchangeTokenPrice (QueryTokenPriceInput) returns (aelf.Hash) {}
-  
+
   rpc RecordSwapTokenPrice (CallbackInput) returns (google.protobuf.Empty) {}
   rpc RecordExchangeTokenPrice (CallbackInput) returns (google.protobuf.Empty) {}
 
@@ -33,7 +33,7 @@ service PriceContract {
   rpc GetBatchSwapTokenPriceInfo (GetBatchSwapTokenPriceInfoInput) returns (BatchPrices) {
     option (aelf.is_view) = true;
   }
-  
+
   rpc GetExchangeTokenPriceInfo (GetExchangeTokenPriceInfoInput) returns (Price) {
     option (aelf.is_view) = true;
   }
@@ -51,6 +51,10 @@ service PriceContract {
   }
 
   rpc GetTracePathLimit (google.protobuf.Empty) returns (TracePathLimit) {
+    option (aelf.is_view) = true;
+  }
+
+  rpc GetSwapTokenInfo (GetSwapTokenInfoInput) returns (PriceTraceInfo) {
     option (aelf.is_view) = true;
   }
 }
@@ -139,6 +143,10 @@ message ChangeTracePathLimitInput{
 
 message SetQueryFeeInput{
   int64 new_query_fee = 1;
+}
+
+message GetSwapTokenInfoInput{
+  string token = 1;
 }
 
 message TracePathLimit{
