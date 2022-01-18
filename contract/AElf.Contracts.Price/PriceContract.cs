@@ -26,7 +26,7 @@ namespace AElf.Contracts.Price
             var authorizedUsers = input.AuthorizedUsers.Any()
                 ? input.AuthorizedUsers
                 : new RepeatedField<Address> {input.Controller};
-            State.AuthorizedSwapTokenPriceQueryUsers.Value = new AuthorizedSwapTokenPriceQueryUsers
+            State.AuthorizedSwapTokenPriceInquirers.Value = new AuthorizedSwapTokenPriceQueryUsers
             {
                 List = {authorizedUsers}
             };
@@ -41,7 +41,7 @@ namespace AElf.Contracts.Price
 
         public override Hash QuerySwapTokenPrice(QueryTokenPriceInput input)
         {
-            var authorizedUsers = State.AuthorizedSwapTokenPriceQueryUsers.Value.List;
+            var authorizedUsers = State.AuthorizedSwapTokenPriceInquirers.Value.List;
             Assert(authorizedUsers.Contains(Context.Sender), $"UnAuthorized sender {Context.Sender}");
             const string title = "TokenSwapPrice";
             var options = new List<string> {$"{input.TokenSymbol}-{input.TargetTokenSymbol}"};
@@ -61,7 +61,7 @@ namespace AElf.Contracts.Price
 
         public override Empty RecordSwapTokenPrice(CallbackInput input)
         {
-            CheckQueryId(input.QueryId);
+            CheckQuery(input.QueryId);
             var tokenPrice = new TokenPrice();
             tokenPrice.MergeFrom(input.Result);
             AssertValidTokenPriceInfo(tokenPrice);
@@ -94,7 +94,7 @@ namespace AElf.Contracts.Price
 
         public override Empty RecordExchangeTokenPrice(CallbackInput input)
         {
-            CheckQueryId(input.QueryId);
+            CheckQuery(input.QueryId);
             var tokenPrice = new TokenPrice();
             tokenPrice.MergeFrom(input.Result);
             AssertValidTokenPriceInfo(tokenPrice);
@@ -141,7 +141,7 @@ namespace AElf.Contracts.Price
         public override Empty UpdateAuthorizedSwapTokenPriceQueryUsers(AuthorizedSwapTokenPriceQueryUsers input)
         {
             CheckSenderIsController();
-            State.AuthorizedSwapTokenPriceQueryUsers.Value = input;
+            State.AuthorizedSwapTokenPriceInquirers.Value = input;
             return new Empty();
         }
 
@@ -239,7 +239,7 @@ namespace AElf.Contracts.Price
                 $"Expired data for pair {token1}:{token2}. Data timestamp in contract: {currentTimestamp}; record data timestamp: {newTimestamp}");
         }
         
-        private void CheckQueryId(Hash queryId)
+        private void CheckQuery(Hash queryId)
         {
             Assert(Context.Sender == State.OracleContract.Value, "No permission.");
             Assert(State.QueryIdMap[queryId], $"Query ID:{queryId} does not exist");

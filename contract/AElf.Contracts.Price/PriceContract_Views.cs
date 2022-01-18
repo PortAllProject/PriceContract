@@ -97,7 +97,7 @@ namespace AElf.Contracts.Price
 
         public override AuthorizedSwapTokenPriceQueryUsers GetAuthorizedSwapTokenPriceQueryUsers(Empty input)
         {
-            return State.AuthorizedSwapTokenPriceQueryUsers.Value;
+            return State.AuthorizedSwapTokenPriceInquirers.Value;
         }
 
         public override TracePathLimit GetTracePathLimit(Empty input)
@@ -111,6 +111,16 @@ namespace AElf.Contracts.Price
         public override PriceTraceInfo GetSwapTokenInfo(GetSwapTokenInfoInput input)
         {
             return State.SwapTokenTraceInfo[input.Token];
+        }
+
+        public override Address GetController(Empty input)
+        {
+            return State.Controller.Value;
+        }
+
+        public override Address GetOracle(Empty input)
+        {
+            return State.OracleContract.Value;
         }
     }
 }

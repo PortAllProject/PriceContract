@@ -57,6 +57,14 @@ service PriceContract {
   rpc GetSwapTokenInfo (GetSwapTokenInfoInput) returns (PriceTraceInfo) {
     option (aelf.is_view) = true;
   }
+
+  rpc GetOracle (google.protobuf.Empty) returns (aelf.Address) {
+    option (aelf.is_view) = true;
+  }
+
+  rpc GetController (google.protobuf.Empty) returns (aelf.Address) {
+    option (aelf.is_view) = true;
+  }
 }
 
 message InitializeInput{
