@@ -226,6 +226,24 @@ namespace AElf.Contracts.Price.Test
             toke4Price.ShouldBe("50.27161755");
             var toke5Price = await GetSwapUnderlyingTokenPrice(token5);
             toke5Price.ShouldBe("10");
+
+            var batchTokenPrice = await PriceContractStub.GetBatchSwapTokenPriceInfo.CallAsync(
+                new GetBatchSwapTokenPriceInfoInput
+                {
+                    TokenPriceQueryList =
+                    {
+                        new GetSwapTokenPriceInfoInput
+                        {
+                            TokenSymbol = token1
+                        },
+                        new GetSwapTokenPriceInfoInput
+                        {
+                            TokenSymbol = token2
+                        }
+                    }
+                });
+            batchTokenPrice.TokenPrices[0].Price.ShouldBe("0");
+            batchTokenPrice.TokenPrices[1].Price.ShouldBe("3.39449996");
         }
 
         [Fact]

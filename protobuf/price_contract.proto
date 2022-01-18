@@ -65,6 +65,10 @@ service PriceContract {
   rpc GetController (google.protobuf.Empty) returns (aelf.Address) {
     option (aelf.is_view) = true;
   }
+
+  rpc GetQueryFee (google.protobuf.Empty) returns (QueryFee) {
+    option (aelf.is_view) = true;
+  }
 }
 
 message InitializeInput{
@@ -155,6 +159,10 @@ message SetQueryFeeInput{
 
 message GetSwapTokenInfoInput{
   string token = 1;
+}
+
+message QueryFee{
+  int64 fee = 1;
 }
 
 message TracePathLimit{

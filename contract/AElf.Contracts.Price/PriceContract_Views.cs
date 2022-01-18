@@ -138,5 +138,13 @@ namespace AElf.Contracts.Price
         {
             return State.OracleContract.Value;
         }
+
+        public override QueryFee GetQueryFee(Empty input)
+        {
+            return new QueryFee
+            {
+                Fee = State.QueryFee.Value
+            };
+        }
     }
 }
