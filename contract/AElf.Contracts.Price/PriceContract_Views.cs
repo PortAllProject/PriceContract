@@ -37,7 +37,7 @@ namespace AElf.Contracts.Price
             };
         }
 
-        public override BatchPrices GetBatchSwapTokenPriceInfo(GetBatchSwapTokenPriceInfoInput input)
+        public override BatchPrices BatchGetSwapTokenPriceInfo(GetBatchSwapTokenPriceInfoInput input)
         {
             var result = new BatchPrices();
             foreach (var tokenPriceQuery in input.TokenPriceQueryList)
@@ -85,7 +85,7 @@ namespace AElf.Contracts.Price
             };
         }
 
-        public override BatchPrices GetBatchExchangeTokenPriceInfo(GetBatchExchangeTokenPriceInfoInput input)
+        public override BatchPrices BatchGetExchangeTokenPriceInfo(GetBatchExchangeTokenPriceInfoInput input)
         {
             var result = new BatchPrices();
             foreach (var tokenPriceQuery in input.TokenPriceQueryList)

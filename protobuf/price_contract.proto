@@ -30,7 +30,7 @@ service PriceContract {
     option (aelf.is_view) = true;
   }
 
-  rpc GetBatchSwapTokenPriceInfo (GetBatchSwapTokenPriceInfoInput) returns (BatchPrices) {
+  rpc BatchGetSwapTokenPriceInfo (GetBatchSwapTokenPriceInfoInput) returns (BatchPrices) {
     option (aelf.is_view) = true;
   }
 
@@ -38,7 +38,7 @@ service PriceContract {
     option (aelf.is_view) = true;
   }
 
-  rpc GetBatchExchangeTokenPriceInfo (GetBatchExchangeTokenPriceInfoInput) returns (BatchPrices) {
+  rpc BatchGetExchangeTokenPriceInfo (GetBatchExchangeTokenPriceInfoInput) returns (BatchPrices) {
     option (aelf.is_view) = true;
   }
 

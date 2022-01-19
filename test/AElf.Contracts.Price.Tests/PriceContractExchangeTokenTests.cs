@@ -73,7 +73,7 @@ namespace AElf.Contracts.Price.Test
             await RecordExchangeTokenPriceAsync(queryId2, token2, token3, price2,
                 timestamp);
             var organization = OracleNodes.First();
-            var batchTokenPrice = await PriceContractStub.GetBatchExchangeTokenPriceInfo.CallAsync(
+            var batchTokenPrice = await PriceContractStub.BatchGetExchangeTokenPriceInfo.CallAsync(
                 new GetBatchExchangeTokenPriceInfoInput
                 {
                     TokenPriceQueryList =

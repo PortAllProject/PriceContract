@@ -227,7 +227,7 @@ namespace AElf.Contracts.Price.Test
             var toke5Price = await GetSwapUnderlyingTokenPrice(token5);
             toke5Price.ShouldBe("10");
 
-            var batchTokenPrice = await PriceContractStub.GetBatchSwapTokenPriceInfo.CallAsync(
+            var batchTokenPrice = await PriceContractStub.BatchGetSwapTokenPriceInfo.CallAsync(
                 new GetBatchSwapTokenPriceInfoInput
                 {
                     TokenPriceQueryList =
