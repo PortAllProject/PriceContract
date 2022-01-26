@@ -26,43 +26,47 @@ namespace AElf.Contracts.Price
             var authorizedUsers = input.AuthorizedUsers.Any()
                 ? input.AuthorizedUsers
                 : new RepeatedField<Address> {input.Controller};
-            State.AuthorizedSwapTokenPriceQueryUsers.Value = new AuthorizedSwapTokenPriceQueryUsers
+            State.AuthorizedSwapTokenPriceInquirers.Value = new AuthorizedSwapTokenPriceQueryUsers
             {
                 List = {authorizedUsers}
             };
             InitializeSwapUnderlyingToken();
             State.Controller.Value = input.Controller;
             Assert(input.TracePathLimit <= MaxTracePathLimit, $"TracePathLimit should less than {MaxTracePathLimit}");
+            Assert(input.QueryFee >= 0, $"Invalid fee set:{input.QueryFee}");
+            State.QueryFee.Value = input.QueryFee == 0 ? Payment : input.QueryFee;
             State.TracePathLimit.Value = input.TracePathLimit > 0 ? input.TracePathLimit : 2;
             return new Empty();
         }
 
         public override Hash QuerySwapTokenPrice(QueryTokenPriceInput input)
         {
-            var authorizedUsers = State.AuthorizedSwapTokenPriceQueryUsers.Value.List;
+            var authorizedUsers = State.AuthorizedSwapTokenPriceInquirers.Value.List;
             Assert(authorizedUsers.Contains(Context.Sender), $"UnAuthorized sender {Context.Sender}");
+            GetTokenKey(input.TokenSymbol, input.TargetTokenSymbol, out _);
             const string title = "TokenSwapPrice";
             var options = new List<string> {$"{input.TokenSymbol}-{input.TargetTokenSymbol}"};
-            var queryId = CreateQuery(input, title, options, nameof(RecordSwapTokenPrice), out var queryIdWithOracle);
-            //State.QueryIdMap[queryIdWithOracle] = true;
+            var queryId = CreateQuery(input, title, options, nameof(RecordSwapTokenPrice));
+            State.QueryIdMap[queryId] = true;
             return queryId;
         }
 
         public override Hash QueryExchangeTokenPrice(QueryTokenPriceInput input)
         {
+            GetTokenKey(input.TokenSymbol, input.TargetTokenSymbol, out _);
             const string title = "ExchangeTokenPrice";
             var options = new List<string> {$"{input.TokenSymbol}-{input.TargetTokenSymbol}"};
-            var queryId = CreateQuery(input, title, options, nameof(RecordExchangeTokenPrice),
-                out var queryIdWithOracle);
-            //State.QueryIdMap[queryIdWithOracle] = true;
+            var queryId = CreateQuery(input, title, options, nameof(RecordExchangeTokenPrice));
+            State.QueryIdMap[queryId] = true;
             return queryId;
         }
 
         public override Empty RecordSwapTokenPrice(CallbackInput input)
         {
-            CheckQueryId(input.QueryId);
+            CheckQuery(input.QueryId);
             var tokenPrice = new TokenPrice();
             tokenPrice.MergeFrom(input.Result);
+            AssertValidTokenPriceInfo(tokenPrice);
             var originalToken = State.SwapTokenTraceInfo[tokenPrice.TokenSymbol];
             if (originalToken != null &&
                 originalToken.TokenList.Any(x => x == tokenPrice.TargetTokenSymbol))
@@ -92,9 +96,10 @@ namespace AElf.Contracts.Price
 
         public override Empty RecordExchangeTokenPrice(CallbackInput input)
         {
-            CheckQueryId(input.QueryId);
+            CheckQuery(input.QueryId);
             var tokenPrice = new TokenPrice();
             tokenPrice.MergeFrom(input.Result);
+            AssertValidTokenPriceInfo(tokenPrice);
             var tokenKey = GetTokenKey(tokenPrice.TokenSymbol, tokenPrice.TargetTokenSymbol, out var isReverse);
             var price = isReverse ? GetPriceReciprocalStr(tokenPrice.Price) : tokenPrice.Price;
             foreach (var node in input.OracleNodes)
@@ -130,41 +135,60 @@ namespace AElf.Contracts.Price
 
         public override Empty UpdateSwapTokenTraceInfo(UpdateSwapTokenTraceInfoInput input)
         {
-            Assert(State.Controller.Value == Context.Sender, $"Invalid sender: {Context.Sender}");
+            CheckSenderIsController();
             AssignTokenPriceTraceInfo(input.TokenSymbol, input.TargetTokenSymbol);
             return new Empty();
         }
 
         public override Empty UpdateAuthorizedSwapTokenPriceQueryUsers(AuthorizedSwapTokenPriceQueryUsers input)
         {
-            Assert(State.Controller.Value == Context.Sender, $"Invalid sender: {Context.Sender}");
-            State.AuthorizedSwapTokenPriceQueryUsers.Value = input;
+            CheckSenderIsController();
+            State.AuthorizedSwapTokenPriceInquirers.Value = input;
             return new Empty();
         }
 
         public override Empty ChangeOracle(ChangeOracleInput input)
         {
-            Assert(State.Controller.Value == Context.Sender, $"Invalid sender: {Context.Sender}");
+            CheckSenderIsController();
             State.OracleContract.Value = input.Oracle;
             return new Empty();
         }
 
         public override Empty ChangeTracePathLimit(ChangeTracePathLimitInput input)
         {
-            Assert(State.Controller.Value == Context.Sender, $"Invalid sender: {Context.Sender}");
+            CheckSenderIsController();
             Assert(input.NewPathLimit > 0 && input.NewPathLimit <= MaxTracePathLimit,
                 $"Invalid input: {input.NewPathLimit}, trace path limit should be greater than 0 and less than {MaxTracePathLimit}");
             State.TracePathLimit.Value = input.NewPathLimit;
             return new Empty();
         }
 
-        private Hash CreateQuery(QueryTokenPriceInput input, string title, IEnumerable<string> options, string callback, out Hash queryIdWithOracleInfo)
+        public override Empty SetQueryFee(SetQueryFeeInput input)
         {
+            CheckSenderIsController();
+            var fee = input.NewQueryFee;
+            Assert(fee > 0, $"Fee: {fee} should be greater than 0");
+            State.QueryFee.Value = fee;
+            return new Empty();
+        }
+
+        private Hash CreateQuery(QueryTokenPriceInput input, string title, IEnumerable<string> options, string callback)
+        {
+            var oracleToken = State.OracleContract.GetOracleTokenSymbol.Call(new Empty()).Value;
+            var fee = State.QueryFee.Value;
             State.TokenContract.Approve.Send(new ApproveInput
             {
                 Spender = State.OracleContract.Value,
-                Amount = Payment,
-                Symbol = State.OracleContract.GetOracleTokenSymbol.Call(new Empty()).Value
+                Amount = fee,
+                Symbol = oracleToken
+            });
+            
+            State.TokenContract.TransferFrom.Send(new TransferFromInput
+            {
+                From = Context.Sender,
+                To = State.OracleContract.Value,
+                Amount = fee,
+                Symbol = oracleToken
             });
 
             var queryInput = new QueryInput
@@ -181,15 +205,14 @@ namespace AElf.Contracts.Price
                     MethodName = callback
                 },
                 DesignatedNodeList = new AddressList {Value = {input.DesignatedNodes}},
-                Payment = Payment,
+                Payment = fee,
                 AggregateThreshold = input.AggregateThreshold,
                 AggregateOption = AggregatorOption
             };
             State.OracleContract.Query.Send(queryInput);
-
-            var queryId = HashHelper.ComputeFrom(queryInput);
-            //var oracleHash =  HashHelper.ComputeFrom(State.OracleContract.Value);
-            queryIdWithOracleInfo = Context.GenerateId(State.OracleContract.Value, queryId);
+            var queryIdFromHash = HashHelper.ComputeFrom(queryInput);
+            var queryId = Context.GenerateId(State.OracleContract.Value, queryIdFromHash);
+            State.QueryIdMap[queryId] = true;
             return queryId;
         }
 
@@ -202,11 +225,11 @@ namespace AElf.Contracts.Price
             if (comparision < 0)
             {
                 isAdjustOrder = true;
-                tokenKey = token2 + token1;
+                tokenKey = $"{token2}-{token1}";
             }
             else
             {
-                tokenKey = token1 + token2;
+                tokenKey = $"{token1}-{token2}";
             }
 
             return tokenKey;
@@ -218,13 +241,27 @@ namespace AElf.Contracts.Price
                 $"Expired data for pair {token1}:{token2}. Data timestamp in contract: {currentTimestamp}; record data timestamp: {newTimestamp}");
         }
         
-        private void CheckQueryId(Hash queryId)
+        private void CheckQuery(Hash queryId)
         {
             Assert(Context.Sender == State.OracleContract.Value, "No permission.");
-            // var oracleHash =  HashHelper.ComputeFrom(State.OracleContract.Value);
-            // var oracleQueryId = HashHelper.ConcatAndCompute(oracleHash, queryId);
-            // Assert(State.QueryIdMap[oracleQueryId], $"Query ID:{queryId} does not exist");
-            // State.QueryIdMap.Remove(oracleQueryId);
+            Assert(State.QueryIdMap[queryId], $"Query ID:{queryId} does not exist");
+            State.QueryIdMap.Remove(queryId);
+        }
+
+        private void CheckSenderIsController()
+        {
+            Assert(State.Controller.Value == Context.Sender, $"Sender: {Context.Sender} is not controller");
+        }
+
+        private void AssertValidTokenPriceInfo(TokenPrice tokenPrice)
+        {
+            AssertValidToken(tokenPrice.TokenSymbol);
+            AssertValidToken(tokenPrice.TargetTokenSymbol);
+        }
+
+        private void AssertValidToken(string token)
+        {
+            Assert(!string.IsNullOrEmpty(token), "Token should not be null");
         }
     }
 }

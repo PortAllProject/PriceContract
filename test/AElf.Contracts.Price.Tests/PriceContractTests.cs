@@ -1,7 +1,9 @@
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using AElf.Contracts.MultiToken;
 using AElf.Contracts.TestsOracle;
+using AElf.ContractTestKit;
 using AElf.Types;
 using Shouldly;
 using Volo.Abp.Threading;
@@ -29,22 +31,58 @@ namespace AElf.Contracts.Price.Test
             txResult.TransactionResult.Status.ShouldBe(TransactionResultStatus.Failed);
         }
 
-        // [Fact]
-        // public async Task RecordTokenPrice_Without_Query_Id_Should_Fail()
-        // {
-        //     var queryId = Hash.Empty;
-        //
-        //     var result = await OracleContractStub.RecordTokenPrice.SendWithExceptionAsync(new TokenPriceInfo
-        //     {
-        //         CallBackAddress = PriceContractAddress,
-        //         CallBackMethodName = nameof(PriceContractStub.RecordExchangeTokenPrice),
-        //         QueryId = queryId,
-        //         TokenPrice = GenerateTokenPriceInfo("ELF", "LLYP", "1.2345", Timestamp.FromDateTime(DateTime.UtcNow)),
-        //         OracleNodes = {OracleNodes}
-        //     });
-        //     result.TransactionResult.Status.ShouldBe(TransactionResultStatus.Failed);
-        // }
+        [Fact]
+        public async Task RecordTokenPrice_Without_Query_Id_Should_Fail()
+        {
+            var queryId = Hash.Empty;
+        
+            var result = await OracleContractStub.RecordTokenPrice.SendWithExceptionAsync(new TokenPriceInfo
+            {
+                CallBackAddress = PriceContractAddress,
+                CallBackMethodName = nameof(PriceContractStub.RecordExchangeTokenPrice),
+                QueryId = queryId,
+                TokenPrice = GenerateTokenPriceInfo("ELF", "LLYP", "1.2345", Timestamp.FromDateTime(DateTime.UtcNow)),
+                OracleNodes = {OracleNodes}
+            });
+            result.TransactionResult.Status.ShouldBe(TransactionResultStatus.Failed);
+        }
 
+        [Fact]
+        public async Task SetQueryFee_Without_Valid_Sender_Should_Fail()
+        {
+            var invalidKp = SampleAccount.Accounts.Skip(1).First().KeyPair;
+            var priceStub = GetPriceContractStub(invalidKp);
+            var txResult = (await priceStub.SetQueryFee.SendWithExceptionAsync(new SetQueryFeeInput())).TransactionResult;
+            txResult.Status.ShouldBe(TransactionResultStatus.Failed);
+        }
+        
+        [Fact]
+        public async Task SetQueryFee_With_Valid_Sender_Should_Success()
+        {
+            var newFee = 10202;
+            await PriceContractStub.SetQueryFee.SendAsync(new SetQueryFeeInput
+            {
+                NewQueryFee = newFee
+            });
+
+            var queryFee = await PriceContractStub.GetQueryFee.CallAsync(new Empty());
+            queryFee.Fee.ShouldBe(newFee);
+        }
+
+        [Fact]
+        public async Task GetOracle_Should_Return_Right_Address()
+        {
+            var oracle = await PriceContractStub.GetOracle.CallAsync(new Empty());
+            oracle.ShouldBe(OracleTestContractAddress);
+        }
+        
+        [Fact]
+        public async Task GetController_Should_Return_Right_Address()
+        {
+            var controller = await PriceContractStub.GetController.CallAsync(new Empty());
+            controller.ShouldBe(DefaultSender);
+        }
+        
         private async Task InitializePriceContractAsync()
         {
             await PriceContractStub.Initialize.SendAsync(new InitializeInput
@@ -65,6 +103,18 @@ namespace AElf.Contracts.Price.Test
                 Issuer = DefaultSender,
                 IsBurnable = true,
                 IssueChainId = 0
+            });
+            await TokenContractStub.Issue.SendAsync(new IssueInput
+            {
+                Amount = 1000_000_000L,
+                Symbol = TokenSymbol,
+                To = DefaultSender
+            });
+            await TokenContractStub.Approve.SendAsync(new ApproveInput
+            {
+                Amount = 1000_000_000L,
+                Symbol = TokenSymbol,
+                Spender = PriceContractAddress
             });
         }
 

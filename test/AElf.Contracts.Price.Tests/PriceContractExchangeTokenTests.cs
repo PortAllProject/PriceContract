@@ -11,15 +11,13 @@ namespace AElf.Contracts.Price.Test
 {
     public partial class PriceContractTests
     {
-        // [Fact]
-        // public async Task QueryExchangeTokenPrice_QueryId_Should_Be_Logged()
-        // {
-        //     var queryId = await QueryExchangeTokenPrice("ELF", "LLYP");
-        //     var queryIdWithOracle =
-        //         HashHelper.ConcatAndCompute(HashHelper.ComputeFrom(OracleTestContractAddress), queryId);
-        //     var isQueryIdLogged = await PriceContractStub.CheckQueryIdIfExisted.CallAsync(queryIdWithOracle);
-        //     isQueryIdLogged.Value.ShouldBeTrue();
-        // }
+        [Fact]
+        public async Task QueryExchangeTokenPrice_QueryId_Should_Be_Logged()
+        {
+            var queryId = await QueryExchangeTokenPrice("ELF", "LLYP");
+            var isQueryIdLogged = await PriceContractStub.CheckQueryIdIfExisted.CallAsync(queryId);
+            isQueryIdLogged.Value.ShouldBeTrue();
+        }
 
         [Fact]
         public async Task RecordExchangeTokenPrice_Without_Controller_Should_Fail()
@@ -57,6 +55,45 @@ namespace AElf.Contracts.Price.Test
                     TargetTokenSymbol = token1
                 });
             priceInfo.Value.ShouldBe("0.81004455");
+        }
+
+        [Fact]
+        public async Task GetBatchExchangeTokenPriceInfo_Should_Get_Right_Price()
+        {
+            var token1 = "ELF";
+            var token2 = "LLYP";
+            var token3 = "LYY";
+            var queryId1 = await QueryExchangeTokenPrice(token1, token2);
+            var queryId2 = await QueryExchangeTokenPrice(token2, token3);
+            var price1 = "1";
+            var price2 = "2";
+            var timestamp = Timestamp.FromDateTime(DateTime.UtcNow);
+            await RecordExchangeTokenPriceAsync(queryId1, token1, token2, price1,
+                timestamp);
+            await RecordExchangeTokenPriceAsync(queryId2, token2, token3, price2,
+                timestamp);
+            var organization = OracleNodes.First();
+            var batchTokenPrice = await PriceContractStub.BatchGetExchangeTokenPriceInfo.CallAsync(
+                new GetBatchExchangeTokenPriceInfoInput
+                {
+                    TokenPriceQueryList =
+                    {
+                        new GetExchangeTokenPriceInfoInput
+                        {
+                            Organization = organization,
+                            TokenSymbol = token1,
+                            TargetTokenSymbol = token2
+                        },
+                        new GetExchangeTokenPriceInfoInput
+                        {
+                            Organization = organization,
+                            TokenSymbol = token2,
+                            TargetTokenSymbol = token3
+                        }
+                    }
+                });
+            batchTokenPrice.TokenPrices[0].Price.ShouldBe(price1);
+            batchTokenPrice.TokenPrices[1].Price.ShouldBe(price2);
         }
 
         [Fact]
@@ -112,6 +149,19 @@ namespace AElf.Contracts.Price.Test
                     TargetTokenSymbol = token1
                 });
             priceInfo.Value.ShouldBe("1.23450000");
+        }
+        
+        [Fact]
+        public async Task GetExchangeTokenPriceInfo_With_Same_Token_Should_Return_One()
+        {
+            var token1 = "ELF";
+            var priceInfo = await PriceContractStub.GetExchangeTokenPriceInfo.CallAsync(
+                new GetExchangeTokenPriceInfoInput
+                {
+                    TokenSymbol = token1,
+                    TargetTokenSymbol = token1
+                });
+            priceInfo.Value.ShouldBe("1");
         }
 
         private async Task<Hash> QueryExchangeTokenPrice(string tokenSymbol, string targetTokenSymbol)

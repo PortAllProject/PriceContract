@@ -153,6 +153,11 @@ namespace AElf.Contracts.Price
 
         private decimal GetTracedTokenPrice(string originalTokenSymbol, string nextTokenSymbol)
         {
+            if (string.IsNullOrEmpty(nextTokenSymbol))
+            {
+                return 0m;
+            }
+            
             var tokenKey = GetTokenKey(originalTokenSymbol, nextTokenSymbol, out var isReverse);
             var price = State.SwapTokenPriceInfo[tokenKey];
             if (price == null)

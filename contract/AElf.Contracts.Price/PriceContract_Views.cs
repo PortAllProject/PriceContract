@@ -7,9 +7,18 @@ namespace AElf.Contracts.Price
     {
         public override Price GetSwapTokenPriceInfo(GetSwapTokenPriceInfoInput input)
         {
+            AssertValidToken(input.TokenSymbol);
             if (string.IsNullOrEmpty(input.TargetTokenSymbol))
             {
                 input.TargetTokenSymbol = UnderlyingTokenSymbol;
+            }
+
+            if (input.TargetTokenSymbol == input.TokenSymbol)
+            {
+                return new Price
+                {
+                    Value = "1"
+                };
             }
 
             var tokenKey = GetTokenKey(input.TokenSymbol, input.TargetTokenSymbol, out _);
@@ -27,8 +36,8 @@ namespace AElf.Contracts.Price
                 Timestamp = timestamp
             };
         }
-        
-        public override BatchPrices GetBatchSwapTokenPriceInfo(GetBatchSwapTokenPriceInfoInput input)
+
+        public override BatchPrices BatchGetSwapTokenPriceInfo(GetBatchSwapTokenPriceInfoInput input)
         {
             var result = new BatchPrices();
             foreach (var tokenPriceQuery in input.TokenPriceQueryList)
@@ -48,9 +57,18 @@ namespace AElf.Contracts.Price
 
         public override Price GetExchangeTokenPriceInfo(GetExchangeTokenPriceInfoInput input)
         {
+            AssertValidToken(input.TokenSymbol);
             if (string.IsNullOrEmpty(input.TargetTokenSymbol))
             {
                 input.TargetTokenSymbol = UnderlyingTokenSymbol;
+            }
+
+            if (input.TargetTokenSymbol == input.TokenSymbol)
+            {
+                return new Price
+                {
+                    Value = "1"
+                };
             }
 
             var tokenKey = GetTokenKey(input.TokenSymbol, input.TargetTokenSymbol, out var isReverse);
@@ -67,7 +85,7 @@ namespace AElf.Contracts.Price
             };
         }
 
-        public override BatchPrices GetBatchExchangeTokenPriceInfo(GetBatchExchangeTokenPriceInfoInput input)
+        public override BatchPrices BatchGetExchangeTokenPriceInfo(GetBatchExchangeTokenPriceInfoInput input)
         {
             var result = new BatchPrices();
             foreach (var tokenPriceQuery in input.TokenPriceQueryList)
@@ -85,17 +103,17 @@ namespace AElf.Contracts.Price
             return result;
         }
 
-        // public override IsQueryIdExisted CheckQueryIdIfExisted(Hash input)
-        // {
-        //     return new IsQueryIdExisted
-        //     {
-        //         Value = State.QueryIdMap[input]
-        //     };
-        // }
+        public override IsQueryIdExisted CheckQueryIdIfExisted(Hash input)
+        {
+            return new IsQueryIdExisted
+            {
+                Value = State.QueryIdMap[input]
+            };
+        }
 
         public override AuthorizedSwapTokenPriceQueryUsers GetAuthorizedSwapTokenPriceQueryUsers(Empty input)
         {
-            return State.AuthorizedSwapTokenPriceQueryUsers.Value;
+            return State.AuthorizedSwapTokenPriceInquirers.Value;
         }
 
         public override TracePathLimit GetTracePathLimit(Empty input)
@@ -103,6 +121,29 @@ namespace AElf.Contracts.Price
             return new TracePathLimit
             {
                 PathLimit = State.TracePathLimit.Value
+            };
+        }
+
+        public override PriceTraceInfo GetSwapTokenInfo(GetSwapTokenInfoInput input)
+        {
+            return State.SwapTokenTraceInfo[input.Token];
+        }
+
+        public override Address GetController(Empty input)
+        {
+            return State.Controller.Value;
+        }
+
+        public override Address GetOracle(Empty input)
+        {
+            return State.OracleContract.Value;
+        }
+
+        public override QueryFee GetQueryFee(Empty input)
+        {
+            return new QueryFee
+            {
+                Fee = State.QueryFee.Value
             };
         }
     }
