@@ -26,6 +26,8 @@ service PriceContract {
     rpc ChangeTracePathLimit(ChangeTracePathLimitInput) returns (google.protobuf.Empty) {}
     rpc SetQueryFee(SetQueryFeeInput) returns (google.protobuf.Empty) {}
 
+    rpc SetUnderlyingToken(SetUnderlyingTokenInput) returns (google.protobuf.Empty) {}
+
     // Views
     rpc GetSwapTokenPriceInfo (GetSwapTokenPriceInfoInput) returns (Price) {
         option (aelf.is_view) = true;
@@ -70,6 +72,10 @@ service PriceContract {
     rpc GetQueryFee (google.protobuf.Empty) returns (QueryFee) {
         option (aelf.is_view) = true;
     }
+
+    rpc GetUnderlyingToken (google.protobuf.Empty) returns (UnderlyingToken) {
+        option (aelf.is_view) = true;
+    }
 }
 
 message InitializeInput{
@@ -78,6 +84,7 @@ message InitializeInput{
     repeated aelf.Address authorized_users = 3;
     int32 trace_path_limit = 4;
     int64 query_fee = 5;
+    string underlying_token_symbol = 6;
 }
 
 message QueryTokenPriceInput{
@@ -164,6 +171,14 @@ message QueryFee{
 
 message TracePathLimit{
     int32 path_limit = 1;
+}
+
+message UnderlyingToken{
+    string value = 1;
+}
+
+message SetUnderlyingTokenInput{
+    string underlying_token = 1;
 }
 
 // Events

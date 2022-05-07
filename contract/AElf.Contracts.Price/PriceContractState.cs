@@ -2,6 +2,7 @@
 using AElf.Contracts.Oracle;
 using AElf.Sdk.CSharp.State;
 using AElf.Types;
+using Google.Protobuf.WellKnownTypes;
 
 namespace AElf.Contracts.Price
 {
@@ -17,5 +18,6 @@ namespace AElf.Contracts.Price
         public MappedState<string, PriceTraceInfo> SwapTokenTraceInfo { get; set; }
         public MappedState<string, Price> SwapTokenPriceInfo { get; set; }
         public MappedState<Address, string, Price> ExchangeTokenPriceInfo { get; set; }
+        public StringState UnderlyingTokenSymbol { get; set; }
     }
 }

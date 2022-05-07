@@ -10,7 +10,7 @@ namespace AElf.Contracts.Price
             AssertValidToken(input.TokenSymbol);
             if (string.IsNullOrEmpty(input.TargetTokenSymbol))
             {
-                input.TargetTokenSymbol = UnderlyingTokenSymbol;
+                input.TargetTokenSymbol = State.UnderlyingTokenSymbol.Value;
             }
 
             if (input.TargetTokenSymbol == input.TokenSymbol)
@@ -60,7 +60,7 @@ namespace AElf.Contracts.Price
             AssertValidToken(input.TokenSymbol);
             if (string.IsNullOrEmpty(input.TargetTokenSymbol))
             {
-                input.TargetTokenSymbol = UnderlyingTokenSymbol;
+                input.TargetTokenSymbol = State.UnderlyingTokenSymbol.Value;
             }
 
             if (input.TargetTokenSymbol == input.TokenSymbol)
@@ -121,6 +121,14 @@ namespace AElf.Contracts.Price
             return new TracePathLimit
             {
                 PathLimit = State.TracePathLimit.Value
+            };
+        }
+
+        public override UnderlyingToken GetUnderlyingToken(Empty input)
+        {
+            return new UnderlyingToken
+            {
+                Value = State.UnderlyingTokenSymbol.Value
             };
         }
 

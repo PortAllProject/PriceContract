@@ -5,9 +5,9 @@ namespace AElf.Contracts.Price
 {
     public partial class PriceContract
     {
-        private void InitializeSwapUnderlyingToken()
+        private void InitializeSwapUnderlyingToken(string underlyingToken)
         {
-            State.SwapTokenTraceInfo[UnderlyingTokenSymbol] = new PriceTraceInfo();
+            State.SwapTokenTraceInfo[underlyingToken] = new PriceTraceInfo();
         }
 
         private void AssertValidToken(string originalSymbol, string targetTokenSymbol)
@@ -127,7 +127,7 @@ namespace AElf.Contracts.Price
                 return 1m;
             }
 
-            if (targetTokenSymbol != UnderlyingTokenSymbol)
+            if (targetTokenSymbol != State.UnderlyingTokenSymbol.Value)
             {
                 var tokenPrice = GetTracedTokenPrice(originalTokenSymbol, targetTokenSymbol);
                 if (tokenPrice != 0m)

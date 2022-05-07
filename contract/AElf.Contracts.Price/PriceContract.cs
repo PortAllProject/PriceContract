@@ -32,12 +32,15 @@ namespace AElf.Contracts.Price
             {
                 Value = {authorizedUsers}
             };
-            InitializeSwapUnderlyingToken();
             State.Controller.Value = controller;
             Assert(input.TracePathLimit <= MaxTracePathLimit, $"TracePathLimit should less than {MaxTracePathLimit}");
             Assert(input.QueryFee >= 0, $"Invalid fee set:{input.QueryFee}");
             State.QueryFee.Value = input.QueryFee == 0 ? Payment : input.QueryFee;
             State.TracePathLimit.Value = input.TracePathLimit > 0 ? input.TracePathLimit : 2;
+            State.UnderlyingTokenSymbol.Value = !string.IsNullOrEmpty(input.UnderlyingTokenSymbol)
+                ? input.UnderlyingTokenSymbol
+                : DefaultUnderlyingTokenSymbol;
+            InitializeSwapUnderlyingToken(State.UnderlyingTokenSymbol.Value);
             return new Empty();
         }
 
@@ -216,6 +219,14 @@ namespace AElf.Contracts.Price
             var queryId = Context.GenerateId(State.OracleContract.Value, queryIdFromHash);
             State.QueryIdMap[queryId] = true;
             return queryId;
+        }
+
+        public override Empty SetUnderlyingToken(SetUnderlyingTokenInput input)
+        {
+            CheckSenderIsController();
+            Assert(!string.IsNullOrEmpty(input.UnderlyingToken), "Invalid underlying token");
+            State.UnderlyingTokenSymbol.Value = input.UnderlyingToken;
+            return new Empty();
         }
 
         private string GetTokenKey(string token1, string token2, out bool isAdjustOrder)
