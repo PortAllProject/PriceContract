@@ -19,5 +19,6 @@ namespace AElf.Contracts.Price
         public MappedState<string, Price> SwapTokenPriceInfo { get; set; }
         public MappedState<Address, string, Price> ExchangeTokenPriceInfo { get; set; }
         public StringState UnderlyingTokenSymbol { get; set; }
+        public SingletonState<Address> TokenSwapAddress { get; set; }
     }
 }

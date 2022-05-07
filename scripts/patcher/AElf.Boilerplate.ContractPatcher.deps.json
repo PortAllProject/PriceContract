@@ -8,9 +8,9 @@
     ".NETCoreApp,Version=v3.1": {
       "AElf.Boilerplate.ContractPatcher/1.0.0": {
         "dependencies": {
-          "AElf.CSharp.CodeOps": "1.0.0",
-          "AElf.Runtime.CSharp.Core": "1.0.0",
-          "AElf.Types": "1.0.0",
+          "AElf.CSharp.CodeOps": "1.1.1-18963",
+          "AElf.Runtime.CSharp.Core": "1.1.1-18963",
+          "AElf.Types": "1.1.1-18963",
           "CommandLineParser": "2.8.0",
           "Volo.Abp.Core": "3.1.0"
         },
@@ -18,7 +18,7 @@
           "AElf.Boilerplate.ContractPatcher.dll": {}
         }
       },
-      "AElf.Core/1.0.0": {
+      "AElf.Core/1.1.1-18963": {
         "dependencies": {
           "Microsoft.Extensions.Logging": "3.1.7",
           "Microsoft.Extensions.Logging.Abstractions": "3.1.7",
@@ -27,14 +27,14 @@
         },
         "runtime": {
           "lib/netstandard2.0/AElf.Core.dll": {
-            "assemblyVersion": "1.0.0.0",
-            "fileVersion": "1.0.0.0"
+            "assemblyVersion": "1.1.1.0",
+            "fileVersion": "1.1.1.0"
           }
         }
       },
-      "AElf.Cryptography/1.0.0": {
+      "AElf.Cryptography/1.1.1-18963": {
         "dependencies": {
-          "AElf.Types": "1.0.0",
+          "AElf.Types": "1.1.1-18963",
           "Portable.BouncyCastle": "1.8.6.7",
           "Secp256k1.Native": "0.1.20",
           "Secp256k1.Net": "0.1.55",
@@ -42,135 +42,135 @@
         },
         "runtime": {
           "lib/netstandard2.0/AElf.Cryptography.dll": {
-            "assemblyVersion": "1.0.0.0",
-            "fileVersion": "1.0.0.0"
+            "assemblyVersion": "1.1.1.0",
+            "fileVersion": "1.1.1.0"
           }
         }
       },
-      "AElf.CSharp.CodeOps/1.0.0": {
+      "AElf.CSharp.CodeOps/1.1.1-18963": {
         "dependencies": {
-          "AElf.Kernel.CodeCheck": "1.0.0",
-          "AElf.Sdk.CSharp": "1.0.0",
+          "AElf.Kernel.CodeCheck": "1.1.1-18963",
+          "AElf.Sdk.CSharp": "1.1.1-18963",
           "Mono.Cecil": "0.11.2"
         },
         "runtime": {
           "lib/netstandard2.0/AElf.CSharp.CodeOps.dll": {
-            "assemblyVersion": "1.0.0.0",
-            "fileVersion": "1.0.0.0"
+            "assemblyVersion": "1.1.1.0",
+            "fileVersion": "1.1.1.0"
           }
         }
       },
-      "AElf.CSharp.Core/1.0.0": {
+      "AElf.CSharp.Core/1.1.1-18963": {
         "dependencies": {
-          "AElf.Types": "1.0.0",
+          "AElf.Types": "1.1.1-18963",
           "Microsoft.CSharp": "4.7.0"
         },
         "runtime": {
           "lib/netstandard2.0/AElf.CSharp.Core.dll": {
-            "assemblyVersion": "1.0.0.0",
-            "fileVersion": "1.0.0.0"
+            "assemblyVersion": "1.1.1.0",
+            "fileVersion": "1.1.1.0"
           }
         }
       },
-      "AElf.Database/1.0.0": {
+      "AElf.Database/1.1.1-18963": {
         "dependencies": {
-          "AElf.Core": "1.0.0",
+          "AElf.Core": "1.1.1-18963",
           "Volo.Abp.Data": "3.1.0"
         },
         "runtime": {
           "lib/netstandard2.0/AElf.Database.dll": {
-            "assemblyVersion": "1.0.0.0",
-            "fileVersion": "1.0.0.0"
+            "assemblyVersion": "1.1.1.0",
+            "fileVersion": "1.1.1.0"
           }
         }
       },
-      "AElf.Kernel.CodeCheck/1.0.0": {
+      "AElf.Kernel.CodeCheck/1.1.1-18963": {
         "dependencies": {
-          "AElf.Kernel.Configuration": "1.0.0",
-          "AElf.Kernel.Proposal": "1.0.0"
+          "AElf.Kernel.Configuration": "1.1.1-18963",
+          "AElf.Kernel.Proposal": "1.1.1-18963"
         },
         "runtime": {
           "lib/netstandard2.0/AElf.Kernel.CodeCheck.dll": {
-            "assemblyVersion": "1.0.0.0",
-            "fileVersion": "1.0.0.0"
+            "assemblyVersion": "1.1.1.0",
+            "fileVersion": "1.1.1.0"
           }
         }
       },
-      "AElf.Kernel.Configuration/1.0.0": {
+      "AElf.Kernel.Configuration/1.1.1-18963": {
         "dependencies": {
-          "AElf.Kernel.SmartContract": "1.0.0"
+          "AElf.Kernel.SmartContract": "1.1.1-18963"
         },
         "runtime": {
           "lib/netstandard2.0/AElf.Kernel.Configuration.dll": {
-            "assemblyVersion": "1.0.0.0",
-            "fileVersion": "1.0.0.0"
+            "assemblyVersion": "1.1.1.0",
+            "fileVersion": "1.1.1.0"
           }
         }
       },
-      "AElf.Kernel.Core/1.0.0": {
+      "AElf.Kernel.Core/1.1.1-18963": {
         "dependencies": {
-          "AElf.CSharp.Core": "1.0.0",
-          "AElf.Cryptography": "1.0.0",
-          "AElf.Database": "1.0.0",
-          "AElf.Kernel.Types": "1.0.0",
+          "AElf.CSharp.Core": "1.1.1-18963",
+          "AElf.Cryptography": "1.1.1-18963",
+          "AElf.Database": "1.1.1-18963",
+          "AElf.Kernel.Types": "1.1.1-18963",
           "Newtonsoft.Json": "12.0.3",
           "Volo.Abp.EventBus": "3.1.0"
         },
         "runtime": {
           "lib/netstandard2.0/AElf.Kernel.Core.dll": {
-            "assemblyVersion": "1.0.0.0",
-            "fileVersion": "1.0.0.0"
+            "assemblyVersion": "1.1.1.0",
+            "fileVersion": "1.1.1.0"
           }
         }
       },
-      "AElf.Kernel.Proposal/1.0.0": {
+      "AElf.Kernel.Proposal/1.1.1-18963": {
         "dependencies": {
-          "AElf.Kernel.SmartContract": "1.0.0"
+          "AElf.Kernel.SmartContract": "1.1.1-18963"
         },
         "runtime": {
           "lib/netstandard2.0/AElf.Kernel.Proposal.dll": {
-            "assemblyVersion": "1.0.0.0",
-            "fileVersion": "1.0.0.0"
+            "assemblyVersion": "1.1.1.0",
+            "fileVersion": "1.1.1.0"
           }
         }
       },
-      "AElf.Kernel.SmartContract/1.0.0": {
+      "AElf.Kernel.SmartContract/1.1.1-18963": {
         "dependencies": {
-          "AElf.CSharp.Core": "1.0.0",
-          "AElf.Kernel.Core": "1.0.0",
-          "AElf.Kernel.SmartContract.Shared": "1.0.0",
+          "AElf.CSharp.Core": "1.1.1-18963",
+          "AElf.Kernel.Core": "1.1.1-18963",
+          "AElf.Kernel.SmartContract.Shared": "1.1.1-18963",
           "Sandwych.QuickGraph.Core": "1.0.0"
         },
         "runtime": {
           "lib/netstandard2.0/AElf.Kernel.SmartContract.dll": {
-            "assemblyVersion": "1.0.0.0",
-            "fileVersion": "1.0.0.0"
+            "assemblyVersion": "1.1.1.0",
+            "fileVersion": "1.1.1.0"
           }
         }
       },
-      "AElf.Kernel.SmartContract.Shared/1.0.0": {
+      "AElf.Kernel.SmartContract.Shared/1.1.1-18963": {
         "dependencies": {
-          "AElf.Types": "1.0.0"
+          "AElf.Types": "1.1.1-18963"
         },
         "runtime": {
           "lib/netstandard2.0/AElf.Kernel.SmartContract.Shared.dll": {
-            "assemblyVersion": "1.0.0.0",
-            "fileVersion": "1.0.0.0"
+            "assemblyVersion": "1.1.1.0",
+            "fileVersion": "1.1.1.0"
           }
         }
       },
-      "AElf.Kernel.Types/1.0.0": {
+      "AElf.Kernel.Types/1.1.1-18963": {
         "dependencies": {
-          "AElf.Types": "1.0.0"
+          "AElf.Types": "1.1.1-18963"
         },
         "runtime": {
           "lib/netstandard2.0/AElf.Kernel.Types.dll": {
-            "assemblyVersion": "1.0.0.0",
-            "fileVersion": "1.0.0.0"
+            "assemblyVersion": "1.1.1.0",
+            "fileVersion": "1.1.1.0"
           }
         }
       },
-      "AElf.Runtime.CSharp.Core/1.0.0": {
+      "AElf.Runtime.CSharp.Core/1.1.1-18963": {
         "dependencies": {
           "Hyperion": "0.9.16",
           "Mono.Cecil": "0.11.2",
@@ -178,32 +178,32 @@
         },
         "runtime": {
           "lib/netcoreapp3.1/AElf.Runtime.CSharp.Core.dll": {
-            "assemblyVersion": "1.0.0.0",
-            "fileVersion": "1.0.0.0"
+            "assemblyVersion": "1.1.1.0",
+            "fileVersion": "1.1.1.0"
           }
         }
       },
-      "AElf.Sdk.CSharp/1.0.0": {
+      "AElf.Sdk.CSharp/1.1.1-18963": {
         "dependencies": {
-          "AElf.CSharp.Core": "1.0.0",
-          "AElf.Cryptography": "1.0.0",
-          "AElf.Kernel.SmartContract.Shared": "1.0.0"
+          "AElf.CSharp.Core": "1.1.1-18963",
+          "AElf.Cryptography": "1.1.1-18963",
+          "AElf.Kernel.SmartContract.Shared": "1.1.1-18963"
         },
         "runtime": {
           "lib/netstandard2.0/AElf.Sdk.CSharp.dll": {
-            "assemblyVersion": "1.0.0.0",
-            "fileVersion": "1.0.0.0"
+            "assemblyVersion": "1.1.1.0",
+            "fileVersion": "1.1.1.0"
           }
         }
       },
-      "AElf.Types/1.0.0": {
+      "AElf.Types/1.1.1-18963": {
         "dependencies": {
           "Google.Protobuf": "3.13.0"
         },
         "runtime": {
           "lib/netstandard2.0/AElf.Types.dll": {
-            "assemblyVersion": "1.0.0.0",
-            "fileVersion": "1.0.0.0"
+            "assemblyVersion": "1.1.1.0",
+            "fileVersion": "1.1.1.0"
           }
         }
       },
@@ -1609,110 +1609,110 @@
       "serviceable": false,
       "sha512": ""
     },
-    "AElf.Core/1.0.0": {
+    "AElf.Core/1.1.1-18963": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-My+MrMCa2DlSt6b6j0iPoUFNV4eAbPL4ilGXpiMRke2ZmxYd8L8aqq7v0uLjlSSg3zAcE6ycr7aHunYaMWE20A==",
-      "path": "aelf.core/1.0.0",
-      "hashPath": "aelf.core.1.0.0.nupkg.sha512"
+      "sha512": "sha512-HB5azW42pi4kAgRh4tFL+4gAjzE9rfrR0XMyI40v24Ijc1yyKmSJIHehGply9vz8p/xdXVADFONeFldSmzglwA==",
+      "path": "aelf.core/1.1.1-18963",
+      "hashPath": "aelf.core.1.1.1-18963.nupkg.sha512"
     },
-    "AElf.Cryptography/1.0.0": {
+    "AElf.Cryptography/1.1.1-18963": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-fzSUPDwML82ehqXZaJ5mmNRtb5TBpE/sgw4aciPzMvx8NfxeynWbzMVaUQmSBlHX2qPr0vRVkTl2WfBoUAwAZg==",
-      "path": "aelf.cryptography/1.0.0",
-      "hashPath": "aelf.cryptography.1.0.0.nupkg.sha512"
+      "sha512": "sha512-3Cin/zdM6uB3XVufuatYrlAdWUvYgTIwngfb1Id8nlsRigHYi/BCVaUK8dBmB/lskQXfr+k4ThMDOTH+c32ZcA==",
+      "path": "aelf.cryptography/1.1.1-18963",
+      "hashPath": "aelf.cryptography.1.1.1-18963.nupkg.sha512"
     },
-    "AElf.CSharp.CodeOps/1.0.0": {
+    "AElf.CSharp.CodeOps/1.1.1-18963": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-dtcZ3Sbl6p2vWNR4/4/iTwoap5OZ/Krun3nuf+/xvESh6XeME1gGyUvYn2GYRiMDx437aeK5PJt2SJsugH8Dmg==",
-      "path": "aelf.csharp.codeops/1.0.0",
-      "hashPath": "aelf.csharp.codeops.1.0.0.nupkg.sha512"
+      "sha512": "sha512-KKbLPE259yFPyN57InpTukNLts9VvvtNK9EYYo8LPaDYZXlr0wCFriiSYXscKpQZGsTjjs9NfFFHQq+nSZf2yg==",
+      "path": "aelf.csharp.codeops/1.1.1-18963",
+      "hashPath": "aelf.csharp.codeops.1.1.1-18963.nupkg.sha512"
     },
-    "AElf.CSharp.Core/1.0.0": {
+    "AElf.CSharp.Core/1.1.1-18963": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-CnmQVAmV5l8s6taf9zXP3M/20mg2eao9ULF0+NU4bBHKNMiwHvw/Ta2kSyzaoDKCdJU242LCDz0Veux/fwVc+w==",
-      "path": "aelf.csharp.core/1.0.0",
-      "hashPath": "aelf.csharp.core.1.0.0.nupkg.sha512"
+      "sha512": "sha512-6kUG7bvz0GQgXVjH5dwDcEwerUitCV/Y0YtOv+biEW+arE/BURRXJhLKXJfNqJWrOVvOSHp/XUgIDRF8TrBYOw==",
+      "path": "aelf.csharp.core/1.1.1-18963",
+      "hashPath": "aelf.csharp.core.1.1.1-18963.nupkg.sha512"
     },
-    "AElf.Database/1.0.0": {
+    "AElf.Database/1.1.1-18963": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-Ekw1jdNCxN+xsIqOwQG/Mc6SXR2HIxz6QFkkz5GhU/bVQRSs7ZFgQJKBu7oolZmGJkvM0QtBasxuOCoDkK1rqg==",
-      "path": "aelf.database/1.0.0",
-      "hashPath": "aelf.database.1.0.0.nupkg.sha512"
+      "sha512": "sha512-YwD+lcmjxwnPMn/UptDRnCZbzYReSvoJ+eWZIXcGoQVm8U3WucygwmPvtvHP+jU7/73khmRd6xsQQHwyN+EsKg==",
+      "path": "aelf.database/1.1.1-18963",
+      "hashPath": "aelf.database.1.1.1-18963.nupkg.sha512"
     },
-    "AElf.Kernel.CodeCheck/1.0.0": {
+    "AElf.Kernel.CodeCheck/1.1.1-18963": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-yjmJh/m3hRdVyPhC7TjLuvr3D7dyTjkDlRw/cJ1xgVF5+a3RxukAxCD+D+WrvTpN5hzmHIW3TssdbZJ1k7O1lQ==",
-      "path": "aelf.kernel.codecheck/1.0.0",
-      "hashPath": "aelf.kernel.codecheck.1.0.0.nupkg.sha512"
+      "sha512": "sha512-nJS2kYGO/iCISXhO6gOUD9SRhFc0yocpnRWdX2tQWjRSeHdkB6wuliYx0+6pWKILMyZyoh/ehLtG/OP1TistbQ==",
+      "path": "aelf.kernel.codecheck/1.1.1-18963",
+      "hashPath": "aelf.kernel.codecheck.1.1.1-18963.nupkg.sha512"
     },
-    "AElf.Kernel.Configuration/1.0.0": {
+    "AElf.Kernel.Configuration/1.1.1-18963": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-F78+hg2DU/SZVz+d0gKUu0HGDkOWTHdnW7IMLvzDvRcpE6ZY8oHEFocH9xXjaopTDWoym0CP3HgP8lo8ueUHUw==",
-      "path": "aelf.kernel.configuration/1.0.0",
-      "hashPath": "aelf.kernel.configuration.1.0.0.nupkg.sha512"
+      "sha512": "sha512-YV4R12psZ/zwOLSGRZnD9mCpl4evRi+IJ02BrThOas9Bzb7KBb5AFAeTTjhj224vgjtDX8WeNce1gK9MNPcWPQ==",
+      "path": "aelf.kernel.configuration/1.1.1-18963",
+      "hashPath": "aelf.kernel.configuration.1.1.1-18963.nupkg.sha512"
     },
-    "AElf.Kernel.Core/1.0.0": {
+    "AElf.Kernel.Core/1.1.1-18963": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-RoHK9oW3zyn2oQWiMoid0C8IZfhT13MHZeCEQ76EEPTtduqbqnMzDrQE71BrYbV1IhRepVwUonW5rs2ueNSukQ==",
-      "path": "aelf.kernel.core/1.0.0",
-      "hashPath": "aelf.kernel.core.1.0.0.nupkg.sha512"
+      "sha512": "sha512-k6/boM1Wxh3AA2kjuHirWkzRPGeIwvzmbo/Tc01wQ3WSXhrBXwVD3n0tgUxSvJmA06JE16/bGGuKwciCM5VoYQ==",
+      "path": "aelf.kernel.core/1.1.1-18963",
+      "hashPath": "aelf.kernel.core.1.1.1-18963.nupkg.sha512"
     },
-    "AElf.Kernel.Proposal/1.0.0": {
+    "AElf.Kernel.Proposal/1.1.1-18963": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-NaS+dEdUvN0/i62Ox5tMXW1JkLe344lH8lzE0C+Ab1j4M9qBhQL8Me7n099L/USPozTetWKLLE4sdAy51quARg==",
-      "path": "aelf.kernel.proposal/1.0.0",
-      "hashPath": "aelf.kernel.proposal.1.0.0.nupkg.sha512"
+      "sha512": "sha512-UDzqRBI21r8P0mhZ6yaOH8IcVFgQJwZdD863P/kk2qVvhJQC3HxbdPXPoifIZ9BGfvPsMXd4WWW6dFkUDvOebg==",
+      "path": "aelf.kernel.proposal/1.1.1-18963",
+      "hashPath": "aelf.kernel.proposal.1.1.1-18963.nupkg.sha512"
     },
-    "AElf.Kernel.SmartContract/1.0.0": {
+    "AElf.Kernel.SmartContract/1.1.1-18963": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-seEWwOfM0X1OxdLsSPTTGMTIDZBUffhpYstes/0S5g9f9ArsWNHSKgyjvCHX5zPHZ+5C1mbfmApfLtjlPjyjTw==",
-      "path": "aelf.kernel.smartcontract/1.0.0",
-      "hashPath": "aelf.kernel.smartcontract.1.0.0.nupkg.sha512"
+      "sha512": "sha512-haaBTSGRDvGf+K5vxxZdTy9DIqxD/TVIKK69MAfiqqTOoshjiUOkef5qPtwc7WyC6YQY1EBdQKyoJhBRz02ZIA==",
+      "path": "aelf.kernel.smartcontract/1.1.1-18963",
+      "hashPath": "aelf.kernel.smartcontract.1.1.1-18963.nupkg.sha512"
     },
-    "AElf.Kernel.SmartContract.Shared/1.0.0": {
+    "AElf.Kernel.SmartContract.Shared/1.1.1-18963": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-eFcloY+JWleayz2y6yVu2+BBt4B6SFahnrjdNwVvZeh1kcwhJbF+L/2MFBcKpNBChEsH4WMuMmUigPkzszqN/Q==",
-      "path": "aelf.kernel.smartcontract.shared/1.0.0",
-      "hashPath": "aelf.kernel.smartcontract.shared.1.0.0.nupkg.sha512"
+      "sha512": "sha512-kX5HgsMkYq97dY3NQcHo8kK2UG+XLSUa5mDgiULqDRmX2VYO2BPcZYn7CRqO0nU8UsGM9Uv0pMp6y2A9w7Qz5g==",
+      "path": "aelf.kernel.smartcontract.shared/1.1.1-18963",
+      "hashPath": "aelf.kernel.smartcontract.shared.1.1.1-18963.nupkg.sha512"
     },
-    "AElf.Kernel.Types/1.0.0": {
+    "AElf.Kernel.Types/1.1.1-18963": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-EjGrzCL0/j3GMMKP7DPQb6TR/rXo6vAm7ARZnNdO1hGs1XjcAYhPoIIMMYCSlFo6ABJdqMfTIzbrwOhwXev6bQ==",
-      "path": "aelf.kernel.types/1.0.0",
-      "hashPath": "aelf.kernel.types.1.0.0.nupkg.sha512"
+      "sha512": "sha512-KEqXGYSA6FzavE+xeW3pYZX54j0xUk9hdsGyTjt9W/sMk8lt0gunFzVM/vri4lOL1pWjPxkUrKVRWLFHkdNueg==",
+      "path": "aelf.kernel.types/1.1.1-18963",
+      "hashPath": "aelf.kernel.types.1.1.1-18963.nupkg.sha512"
     },
-    "AElf.Runtime.CSharp.Core/1.0.0": {
+    "AElf.Runtime.CSharp.Core/1.1.1-18963": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-AUBeWqFaFQMzcgL/Qxp0BoK5aYBzOEBCev7iq6NORYzmEdMl8jBYA/K3V7hgRkj3rWkYpQV/PhcXSHzEn7TRFQ==",
-      "path": "aelf.runtime.csharp.core/1.0.0",
-      "hashPath": "aelf.runtime.csharp.core.1.0.0.nupkg.sha512"
+      "sha512": "sha512-zAbwLYo6C4QNWspo9gzkerZdgqR6gdZ7+26aTrOyrumWWVkEp5cjELILC9x1CwcOxKqqPfyotUuVMUhdQyNd+A==",
+      "path": "aelf.runtime.csharp.core/1.1.1-18963",
+      "hashPath": "aelf.runtime.csharp.core.1.1.1-18963.nupkg.sha512"
     },
-    "AElf.Sdk.CSharp/1.0.0": {
+    "AElf.Sdk.CSharp/1.1.1-18963": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-a6smyV/HgwUbj9QcAVN3S+0ZrM7xPzinOS7EzoRXnc++3v6wU6azmEccqhxp9cUXwmLeYCFpSj3RY2uvlRMGvQ==",
-      "path": "aelf.sdk.csharp/1.0.0",
-      "hashPath": "aelf.sdk.csharp.1.0.0.nupkg.sha512"
+      "sha512": "sha512-Y2vb/K87jRVpLA3Fw7phNGqwVKHkAexWJOAE4LYApF3Hy8VwWl8MqgIlBpzVbYgrizPZIU9LVPIQNpHLj3Klhg==",
+      "path": "aelf.sdk.csharp/1.1.1-18963",
+      "hashPath": "aelf.sdk.csharp.1.1.1-18963.nupkg.sha512"
     },
-    "AElf.Types/1.0.0": {
+    "AElf.Types/1.1.1-18963": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-Pf+bpMxIkrYibUZgtA7cyMbEWOW/skJhdG0l7KJgAYw7IVhAZq2iDIftsbpZF9MW1MIrbwk/FPT3y71eSiM73g==",
-      "path": "aelf.types/1.0.0",
-      "hashPath": "aelf.types.1.0.0.nupkg.sha512"
+      "sha512": "sha512-Yk6S9nSOjAVrhJgfmHCnxTy5ZQkr4Z1kxbV6iHE1QPOp6c/MkbhYULdyZobtT/T+zc8ieFC0naEE+2EXKaogbA==",
+      "path": "aelf.types/1.1.1-18963",
+      "hashPath": "aelf.types.1.1.1-18963.nupkg.sha512"
     },
     "CommandLineParser/2.8.0": {
       "type": "package",
