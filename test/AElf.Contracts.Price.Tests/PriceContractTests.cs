@@ -88,7 +88,8 @@ namespace AElf.Contracts.Price.Test
             await PriceContractStub.Initialize.SendAsync(new InitializeInput
             {
                 OracleAddress = OracleTestContractAddress,
-                Controller = DefaultSender
+                Controller = DefaultSender,
+                TokenSwapAddress = OracleTestContractAddress
             });
         }
 

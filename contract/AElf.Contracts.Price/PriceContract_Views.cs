@@ -1,4 +1,6 @@
 using AElf.Types;
+using Awaken.Contracts.Swap;
+using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
 
 namespace AElf.Contracts.Price
@@ -71,17 +73,28 @@ namespace AElf.Contracts.Price
                 };
             }
 
-            var tokenKey = GetTokenKey(input.TokenSymbol, input.TargetTokenSymbol, out var isReverse);
-            var priceInfo = State.ExchangeTokenPriceInfo[input.Organization][tokenKey];
-            if (!isReverse)
+            var reservesInput = new GetReservesInput
             {
-                return priceInfo;
+                SymbolPair = { $"{input.TokenSymbol}-{input.TargetTokenSymbol}" }
+            }.ToByteString();
+            var tokenReserves = Context.Call<GetReservesOutput>(Context.Self, State.TokenSwapAddress.Value,
+                nameof(AwakenSwapContractContainer.AwakenSwapContractReferenceState.GetReserves), reservesInput);
+            Assert(tokenReserves.Results.Count == 1,
+                $"Token Pair does not exist: {input.TokenSymbol}-{input.TargetTokenSymbol}");
+            var tokenPair = tokenReserves.Results[0];
+            if (input.TargetTokenSymbol == tokenPair.SymbolA)
+            {
+                return new Price
+                {
+                    Timestamp = new Timestamp(),
+                    Value = GetPriceWithDecimal((decimal)tokenPair.ReserveB / tokenPair.ReserveA)
+                };
             }
-
+            
             return new Price
             {
-                Timestamp = priceInfo.Timestamp,
-                Value = GetPriceReciprocalStr(priceInfo.Value)
+                Timestamp = new Timestamp(),
+                Value = GetPriceWithDecimal((decimal)tokenPair.ReserveA / tokenPair.ReserveB)
             };
         }
 
@@ -130,6 +143,11 @@ namespace AElf.Contracts.Price
             {
                 Value = State.UnderlyingTokenSymbol.Value
             };
+        }
+
+        public override Address GetTokenSwapAddress(Empty input)
+        {
+            return State.TokenSwapAddress.Value;
         }
 
         public override PriceTraceInfo GetSwapTokenInfo(GetSwapTokenInfoInput input)

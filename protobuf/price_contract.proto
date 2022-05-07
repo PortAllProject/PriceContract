@@ -27,6 +27,7 @@ service PriceContract {
     rpc SetQueryFee(SetQueryFeeInput) returns (google.protobuf.Empty) {}
 
     rpc SetUnderlyingToken(SetUnderlyingTokenInput) returns (google.protobuf.Empty) {}
+    rpc SetTokenSwapAddress(aelf.Address) returns (google.protobuf.Empty) {}
 
     // Views
     rpc GetSwapTokenPriceInfo (GetSwapTokenPriceInfoInput) returns (Price) {
@@ -76,6 +77,10 @@ service PriceContract {
     rpc GetUnderlyingToken (google.protobuf.Empty) returns (UnderlyingToken) {
         option (aelf.is_view) = true;
     }
+
+    rpc GetTokenSwapAddress (google.protobuf.Empty) returns (aelf.Address) {
+        option (aelf.is_view) = true;
+    }
 }
 
 message InitializeInput{
@@ -85,6 +90,7 @@ message InitializeInput{
     int32 trace_path_limit = 4;
     int64 query_fee = 5;
     string underlying_token_symbol = 6;
+    aelf.Address token_swap_address = 7;
 }
 
 message QueryTokenPriceInput{

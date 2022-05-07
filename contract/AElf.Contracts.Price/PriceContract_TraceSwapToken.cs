@@ -174,5 +174,10 @@ namespace AElf.Contracts.Price
         {
             return decimal.Round(GetPriceReciprocal(price), PriceDecimals).ToString();
         }
+        
+        private string GetPriceWithDecimal(decimal price)
+        {
+            return decimal.Round(price, PriceDecimals).ToString();
+        }
     }
 }
