@@ -7,10 +7,7 @@ namespace AElf.Contracts.Price
     {
         private void InitializeSwapUnderlyingToken()
         {
-            State.SwapTokenTraceInfo[UnderlyingTokenSymbol] = new PriceTraceInfo
-            {
-                TracedPathWeight = 0
-            };
+            State.SwapTokenTraceInfo[UnderlyingTokenSymbol] = new PriceTraceInfo();
         }
 
         private void AssertValidToken(string originalSymbol, string targetTokenSymbol)

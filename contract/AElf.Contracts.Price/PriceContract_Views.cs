@@ -37,13 +37,13 @@ namespace AElf.Contracts.Price
             };
         }
 
-        public override BatchPrices BatchGetSwapTokenPriceInfo(GetBatchSwapTokenPriceInfoInput input)
+        public override TokenPriceList BatchGetSwapTokenPriceInfo(GetBatchSwapTokenPriceInfoInput input)
         {
-            var result = new BatchPrices();
+            var result = new TokenPriceList();
             foreach (var tokenPriceQuery in input.TokenPriceQueryList)
             {
                 var priceInfo = GetSwapTokenPriceInfo(tokenPriceQuery);
-                result.TokenPrices.Add(new TokenPrice
+                result.Value.Add(new TokenPrice
                 {
                     TokenSymbol = tokenPriceQuery.TokenSymbol,
                     TargetTokenSymbol = tokenPriceQuery.TargetTokenSymbol,
@@ -85,13 +85,13 @@ namespace AElf.Contracts.Price
             };
         }
 
-        public override BatchPrices BatchGetExchangeTokenPriceInfo(GetBatchExchangeTokenPriceInfoInput input)
+        public override TokenPriceList BatchGetExchangeTokenPriceInfo(GetBatchExchangeTokenPriceInfoInput input)
         {
-            var result = new BatchPrices();
+            var result = new TokenPriceList();
             foreach (var tokenPriceQuery in input.TokenPriceQueryList)
             {
                 var priceInfo = GetExchangeTokenPriceInfo(tokenPriceQuery);
-                result.TokenPrices.Add(new TokenPrice
+                result.Value.Add(new TokenPrice
                 {
                     TokenSymbol = tokenPriceQuery.TokenSymbol,
                     TargetTokenSymbol = tokenPriceQuery.TargetTokenSymbol,
@@ -111,7 +111,7 @@ namespace AElf.Contracts.Price
             };
         }
 
-        public override AuthorizedSwapTokenPriceQueryUsers GetAuthorizedSwapTokenPriceQueryUsers(Empty input)
+        public override AddressList GetAuthorizedSwapTokenPriceQueryUsers(Empty input)
         {
             return State.AuthorizedSwapTokenPriceInquirers.Value;
         }

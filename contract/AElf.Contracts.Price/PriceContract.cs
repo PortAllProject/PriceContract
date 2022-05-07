@@ -17,21 +17,23 @@ namespace AElf.Contracts.Price
         {
             Assert(State.OracleContract.Value == null, "Already initialized.");
             State.OracleContract.Value = input.OracleAddress;
+
             if (State.TokenContract.Value == null)
             {
                 State.TokenContract.Value =
                     Context.GetContractAddressByName(SmartContractConstants.TokenContractSystemName);
             }
 
+            var controller = input.Controller ?? Context.Sender;
             var authorizedUsers = input.AuthorizedUsers.Any()
                 ? input.AuthorizedUsers
-                : new RepeatedField<Address> {input.Controller};
-            State.AuthorizedSwapTokenPriceInquirers.Value = new AuthorizedSwapTokenPriceQueryUsers
+                : new RepeatedField<Address> {controller};
+            State.AuthorizedSwapTokenPriceInquirers.Value = new AddressList
             {
-                List = {authorizedUsers}
+                Value = {authorizedUsers}
             };
             InitializeSwapUnderlyingToken();
-            State.Controller.Value = input.Controller;
+            State.Controller.Value = controller;
             Assert(input.TracePathLimit <= MaxTracePathLimit, $"TracePathLimit should less than {MaxTracePathLimit}");
             Assert(input.QueryFee >= 0, $"Invalid fee set:{input.QueryFee}");
             State.QueryFee.Value = input.QueryFee == 0 ? Payment : input.QueryFee;
@@ -41,7 +43,7 @@ namespace AElf.Contracts.Price
 
         public override Hash QuerySwapTokenPrice(QueryTokenPriceInput input)
         {
-            var authorizedUsers = State.AuthorizedSwapTokenPriceInquirers.Value.List;
+            var authorizedUsers = State.AuthorizedSwapTokenPriceInquirers.Value.Value;
             Assert(authorizedUsers.Contains(Context.Sender), $"UnAuthorized sender {Context.Sender}");
             GetTokenKey(input.TokenSymbol, input.TargetTokenSymbol, out _);
             const string title = "TokenSwapPrice";
@@ -124,9 +126,9 @@ namespace AElf.Contracts.Price
                 TargetTokenSymbol = tokenPrice.TargetTokenSymbol,
                 Price = tokenPrice.Price,
                 Timestamp = tokenPrice.Timestamp,
-                PriceSupplier = new OrganizationList
+                PriceSupplier = new AddressList
                 {
-                    NodeList = {input.OracleNodes}
+                    Value = {input.OracleNodes}
                 },
                 QueryId = input.QueryId
             });
@@ -140,7 +142,7 @@ namespace AElf.Contracts.Price
             return new Empty();
         }
 
-        public override Empty UpdateAuthorizedSwapTokenPriceQueryUsers(AuthorizedSwapTokenPriceQueryUsers input)
+        public override Empty UpdateAuthorizedSwapTokenPriceQueryUsers(AddressList input)
         {
             CheckSenderIsController();
             State.AuthorizedSwapTokenPriceInquirers.Value = input;
@@ -204,7 +206,7 @@ namespace AElf.Contracts.Price
                     ContractAddress = Context.Self,
                     MethodName = callback
                 },
-                DesignatedNodeList = new AddressList {Value = {input.DesignatedNodes}},
+                DesignatedNodeList = new Oracle.AddressList {Value = {input.DesignatedNodes}},
                 Payment = fee,
                 AggregateThreshold = input.AggregateThreshold,
                 AggregateOption = AggregatorOption
