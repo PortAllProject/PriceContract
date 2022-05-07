@@ -242,8 +242,8 @@ namespace AElf.Contracts.Price.Test
                         }
                     }
                 });
-            batchTokenPrice.TokenPrices[0].Price.ShouldBe("0");
-            batchTokenPrice.TokenPrices[1].Price.ShouldBe("3.39449996");
+            batchTokenPrice.Value[0].Price.ShouldBe("0");
+            batchTokenPrice.Value[1].Price.ShouldBe("3.39449996");
         }
 
         [Fact]
@@ -378,9 +378,9 @@ namespace AElf.Contracts.Price.Test
         {
             var unAuthorizedUser = SampleAccount.Accounts.Skip(1).First().KeyPair;
             var unAuthorizedPriceStub = GetPriceContractStub(unAuthorizedUser);
-            var newUserList = new AuthorizedSwapTokenPriceQueryUsers
+            var newUserList = new AddressList
             {
-                List = {OracleNodes}
+                Value = {OracleNodes}
             };
 
             var txResult = await unAuthorizedPriceStub.UpdateAuthorizedSwapTokenPriceQueryUsers.SendWithExceptionAsync(newUserList);
@@ -391,15 +391,15 @@ namespace AElf.Contracts.Price.Test
         [Fact]
         public async Task UpdateAuthorizedSwapTokenPriceQueryUsers_Test()
         {
-            var newUserList = new AuthorizedSwapTokenPriceQueryUsers
+            var newUserList = new AddressList
             {
-                List = {OracleNodes}
+                Value = {OracleNodes}
             };
 
             await PriceContractStub.UpdateAuthorizedSwapTokenPriceQueryUsers.SendAsync(newUserList);
             var userList = await PriceContractStub.GetAuthorizedSwapTokenPriceQueryUsers.CallAsync(new Empty());
-            userList.List.Count.ShouldBe(newUserList.List.Count);
-            userList.List.All(x => newUserList.List.Contains(x)).ShouldBeTrue();
+            userList.Value.Count.ShouldBe(newUserList.Value.Count);
+            userList.Value.All(x => newUserList.Value.Contains(x)).ShouldBeTrue();
         }
 
         private async Task AddNewPairWithPriceAsync(string token1, string token2, string price,

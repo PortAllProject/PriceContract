@@ -92,8 +92,8 @@ namespace AElf.Contracts.Price.Test
                         }
                     }
                 });
-            batchTokenPrice.TokenPrices[0].Price.ShouldBe(price1);
-            batchTokenPrice.TokenPrices[1].Price.ShouldBe(price2);
+            batchTokenPrice.Value[0].Price.ShouldBe(price1);
+            batchTokenPrice.Value[1].Price.ShouldBe(price2);
         }
 
         [Fact]
