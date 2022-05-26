@@ -1,4 +1,5 @@
 using AElf.Contracts.MultiToken;
+using AElf.CSharp.Core;
 using AElf.Types;
 using Awaken.Contracts.Swap;
 using Google.Protobuf;
@@ -70,7 +71,7 @@ namespace AElf.Contracts.Price
             {
                 return new Price
                 {
-                    Value = "1"
+                    Value = Mantissa.ToString()
                 };
             }
 
@@ -182,13 +183,12 @@ namespace AElf.Contracts.Price
             };
         }
 
-        public static string GetMantissaPrice(long tokenReserve, long targetTokenReserve, int tokenDecimals,
+        public static string GetMantissaPrice(BigIntValue tokenReserve, BigIntValue targetTokenReserve, int tokenDecimals,
             int reserveTokenDecimals)
         {
-            var price = (decimal)tokenReserve /
-                GetDecimalMultiplier(tokenDecimals)
-                * GetDecimalMultiplier(reserveTokenDecimals) / targetTokenReserve * Mantissa;
-            return decimal.ToUInt64(price).ToString();
+            var price = tokenReserve.Mul(GetDecimalMultiplier(reserveTokenDecimals)).Mul(Mantissa)
+                .Div(GetDecimalMultiplier(tokenDecimals)).Div(targetTokenReserve);
+            return price.Value;
         }
 
         public static long GetDecimalMultiplier(int decimals)
