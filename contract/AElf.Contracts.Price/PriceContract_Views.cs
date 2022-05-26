@@ -1,3 +1,4 @@
+using AElf.Contracts.MultiToken;
 using AElf.Types;
 using Awaken.Contracts.Swap;
 using Google.Protobuf;
@@ -82,19 +83,27 @@ namespace AElf.Contracts.Price
             Assert(tokenReserves.Results.Count == 1,
                 $"Token Pair does not exist: {input.TokenSymbol}-{input.TargetTokenSymbol}");
             var tokenPair = tokenReserves.Results[0];
+            var tokenADecimals = State.TokenContract.GetTokenInfo.Call(new GetTokenInfoInput
+            {
+                Symbol = tokenPair.SymbolA
+            }).Decimals;
+            var tokenBDecimals = State.TokenContract.GetTokenInfo.Call(new GetTokenInfoInput
+            {
+                Symbol = tokenPair.SymbolB
+            }).Decimals;
             if (input.TargetTokenSymbol == tokenPair.SymbolA)
             {
                 return new Price
                 {
                     Timestamp = new Timestamp(),
-                    Value = GetPriceWithDecimal((decimal)tokenPair.ReserveB / tokenPair.ReserveA)
+                    Value = GetMantissaPrice(tokenPair.ReserveB, tokenPair.ReserveA, tokenBDecimals, tokenADecimals)
                 };
             }
             
             return new Price
             {
                 Timestamp = new Timestamp(),
-                Value = GetPriceWithDecimal((decimal)tokenPair.ReserveA / tokenPair.ReserveB)
+                Value = GetMantissaPrice(tokenPair.ReserveA, tokenPair.ReserveB, tokenADecimals, tokenBDecimals)
             };
         }
 
@@ -171,6 +180,24 @@ namespace AElf.Contracts.Price
             {
                 Fee = State.QueryFee.Value
             };
+        }
+
+        public static string GetMantissaPrice(long tokenReserve, long targetTokenReserve, int tokenDecimals, int reserveTokenDecimals)
+        {
+            var price = (decimal)tokenReserve * Mantissa * GetDecimalMultiplier(reserveTokenDecimals) /
+                        GetDecimalMultiplier(tokenDecimals) / targetTokenReserve;
+            return decimal.ToUInt64(price).ToString();
+        }
+
+        public static long GetDecimalMultiplier(int decimals)
+        {
+            long multiplier = 1;
+            while (decimals -- > 0)
+            {
+                multiplier *= 10;
+            }
+
+            return multiplier;
         }
     }
 }
