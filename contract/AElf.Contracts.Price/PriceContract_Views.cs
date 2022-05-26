@@ -182,10 +182,12 @@ namespace AElf.Contracts.Price
             };
         }
 
-        public static string GetMantissaPrice(long tokenReserve, long targetTokenReserve, int tokenDecimals, int reserveTokenDecimals)
+        public static string GetMantissaPrice(long tokenReserve, long targetTokenReserve, int tokenDecimals,
+            int reserveTokenDecimals)
         {
-            var price = (decimal)tokenReserve * Mantissa * GetDecimalMultiplier(reserveTokenDecimals) /
-                        GetDecimalMultiplier(tokenDecimals) / targetTokenReserve;
+            var price = (decimal)tokenReserve /
+                GetDecimalMultiplier(tokenDecimals)
+                * GetDecimalMultiplier(reserveTokenDecimals) / targetTokenReserve * Mantissa;
             return decimal.ToUInt64(price).ToString();
         }
 
