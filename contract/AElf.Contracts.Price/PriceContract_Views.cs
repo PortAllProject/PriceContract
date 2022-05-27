@@ -97,14 +97,14 @@ namespace AElf.Contracts.Price
                 return new Price
                 {
                     Timestamp = new Timestamp(),
-                    Value = GetMantissaPrice(tokenPair.ReserveB, tokenPair.ReserveA, tokenBDecimals, tokenADecimals)
+                    Value = GetMantissaPrice(tokenPair.ReserveA, tokenPair.ReserveB, tokenADecimals, tokenBDecimals)
                 };
             }
             
             return new Price
             {
                 Timestamp = new Timestamp(),
-                Value = GetMantissaPrice(tokenPair.ReserveA, tokenPair.ReserveB, tokenADecimals, tokenBDecimals)
+                Value = GetMantissaPrice(tokenPair.ReserveB, tokenPair.ReserveA, tokenBDecimals, tokenADecimals)
             };
         }
 
