@@ -97,14 +97,14 @@ namespace AElf.Contracts.Price
                 return new Price
                 {
                     Timestamp = new Timestamp(),
-                    Value = GetMantissaPrice(tokenPair.ReserveA, tokenPair.ReserveB, tokenADecimals, tokenBDecimals)
+                    Value = GetMantissaPrice(tokenPair.ReserveA, tokenPair.ReserveB)
                 };
             }
             
             return new Price
             {
                 Timestamp = new Timestamp(),
-                Value = GetMantissaPrice(tokenPair.ReserveB, tokenPair.ReserveA, tokenBDecimals, tokenADecimals)
+                Value = GetMantissaPrice(tokenPair.ReserveB, tokenPair.ReserveA)
             };
         }
 
@@ -183,8 +183,8 @@ namespace AElf.Contracts.Price
             };
         }
 
-        public static string GetMantissaPrice(BigIntValue tokenReserve, BigIntValue targetTokenReserve, int tokenDecimals,
-            int reserveTokenDecimals)
+        public static string GetMantissaPrice(BigIntValue tokenReserve, BigIntValue targetTokenReserve, int tokenDecimals = 0,
+            int reserveTokenDecimals = 0)
         {
             var price = tokenReserve.Mul(GetDecimalMultiplier(reserveTokenDecimals)).Mul(Mantissa)
                 .Div(GetDecimalMultiplier(tokenDecimals)).Div(targetTokenReserve);
