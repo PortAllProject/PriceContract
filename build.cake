@@ -99,3 +99,4 @@ Task("Upload-Coverage-Azure")
 });
 
 RunTarget(target);
+
