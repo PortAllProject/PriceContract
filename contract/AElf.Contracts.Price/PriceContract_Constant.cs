@@ -8,5 +8,7 @@ namespace AElf.Contracts.Price
         private const int Payment = 10_000_000;
         private const int AggregatorOption = 2;
         private const int MaxTracePathLimit = 3;
+
+        public const long Mantissa = 1000000000000000000L;
     }
 }

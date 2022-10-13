@@ -41,6 +41,9 @@ namespace AElf.Contracts.Price
                 ? input.UnderlyingTokenSymbol
                 : DefaultUnderlyingTokenSymbol;
             InitializeSwapUnderlyingToken(State.UnderlyingTokenSymbol.Value);
+            Assert(input.TokenSwapAddress != null && input.TokenSwapAddress != new Address(),
+                "Invalid token swap address");
+            State.TokenSwapAddress.Value = input.TokenSwapAddress;
             return new Empty();
         }
 
@@ -226,6 +229,15 @@ namespace AElf.Contracts.Price
             CheckSenderIsController();
             Assert(!string.IsNullOrEmpty(input.UnderlyingToken), "Invalid underlying token");
             State.UnderlyingTokenSymbol.Value = input.UnderlyingToken;
+            return new Empty();
+        }
+
+        public override Empty SetTokenSwapAddress(Address input)
+        {
+            CheckSenderIsController();
+            Assert(input != null && input != new Address(),
+                "Invalid token swap address");
+            State.TokenSwapAddress.Value = input;
             return new Empty();
         }
 

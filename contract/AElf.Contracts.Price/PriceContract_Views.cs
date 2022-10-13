@@ -1,4 +1,8 @@
+using AElf.Contracts.MultiToken;
+using AElf.CSharp.Core;
 using AElf.Types;
+using Awaken.Contracts.Swap;
+using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
 
 namespace AElf.Contracts.Price
@@ -67,21 +71,40 @@ namespace AElf.Contracts.Price
             {
                 return new Price
                 {
-                    Value = "1"
+                    Value = Mantissa.ToString()
                 };
             }
 
-            var tokenKey = GetTokenKey(input.TokenSymbol, input.TargetTokenSymbol, out var isReverse);
-            var priceInfo = State.ExchangeTokenPriceInfo[input.Organization][tokenKey];
-            if (!isReverse)
+            var reservesInput = new GetReservesInput
             {
-                return priceInfo;
+                SymbolPair = { $"{input.TokenSymbol}-{input.TargetTokenSymbol}" }
+            }.ToByteString();
+            var tokenReserves = Context.Call<GetReservesOutput>(Context.Self, State.TokenSwapAddress.Value,
+                nameof(AwakenSwapContractContainer.AwakenSwapContractReferenceState.GetReserves), reservesInput);
+            Assert(tokenReserves.Results.Count == 1,
+                $"Token Pair does not exist: {input.TokenSymbol}-{input.TargetTokenSymbol}");
+            var tokenPair = tokenReserves.Results[0];
+            var tokenADecimals = State.TokenContract.GetTokenInfo.Call(new GetTokenInfoInput
+            {
+                Symbol = tokenPair.SymbolA
+            }).Decimals;
+            var tokenBDecimals = State.TokenContract.GetTokenInfo.Call(new GetTokenInfoInput
+            {
+                Symbol = tokenPair.SymbolB
+            }).Decimals;
+            if (input.TargetTokenSymbol == tokenPair.SymbolA)
+            {
+                return new Price
+                {
+                    Timestamp = new Timestamp(),
+                    Value = GetMantissaPrice(tokenPair.ReserveA, tokenPair.ReserveB, tokenADecimals, tokenBDecimals)
+                };
             }
-
+            
             return new Price
             {
-                Timestamp = priceInfo.Timestamp,
-                Value = GetPriceReciprocalStr(priceInfo.Value)
+                Timestamp = new Timestamp(),
+                Value = GetMantissaPrice(tokenPair.ReserveB, tokenPair.ReserveA, tokenBDecimals, tokenADecimals)
             };
         }
 
@@ -132,6 +155,11 @@ namespace AElf.Contracts.Price
             };
         }
 
+        public override Address GetTokenSwapAddress(Empty input)
+        {
+            return State.TokenSwapAddress.Value;
+        }
+
         public override PriceTraceInfo GetSwapTokenInfo(GetSwapTokenInfoInput input)
         {
             return State.SwapTokenTraceInfo[input.Token];
@@ -153,6 +181,25 @@ namespace AElf.Contracts.Price
             {
                 Fee = State.QueryFee.Value
             };
+        }
+
+        public static string GetMantissaPrice(BigIntValue tokenReserve, BigIntValue targetTokenReserve, int tokenDecimals,
+            int reserveTokenDecimals)
+        {
+            var price = tokenReserve.Mul(GetDecimalMultiplier(reserveTokenDecimals)).Mul(Mantissa)
+                .Div(GetDecimalMultiplier(tokenDecimals)).Div(targetTokenReserve);
+            return price.Value;
+        }
+
+        public static long GetDecimalMultiplier(int decimals)
+        {
+            long multiplier = 1;
+            while (decimals -- > 0)
+            {
+                multiplier *= 10;
+            }
+
+            return multiplier;
         }
     }
 }

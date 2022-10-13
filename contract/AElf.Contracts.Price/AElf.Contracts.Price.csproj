@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <TargetFramework>netstandard2.0</TargetFramework>
+        <TargetFramework>net6.0</TargetFramework>
         <!-- The root namespace -->
         <!-- Mark this project as a contract -->
         <IsContract>true</IsContract>
@@ -19,6 +19,9 @@
         </ContractReference>
         <ContractReference Include="..\..\protobuf\oracle_contract.proto">
             <Link>Protobuf\Proto\oracle_contract.proto</Link>
+        </ContractReference>
+        <ContractReference Include="..\..\protobuf\awaken_swap_contract.proto">
+            <Link>Protobuf\Proto\awaken_swap_contract.proto</Link>
         </ContractReference>
         <CommonMessage Include="..\..\protobuf\callback_input.proto">
             <Link>Protobuf\Proto\callback_input.proto</Link>
